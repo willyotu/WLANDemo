@@ -15,7 +15,7 @@ namespace Tap.Wlan.Demo
 {
     [Display("Transmitter Setup", Groups: new[] { "WLAN Demo", "Transmitter Measurements"}, Description: "Insert a description here")]
     [AllowAnyChild]
-    public class Transmitter_Measurements : TestStep
+    public class TransmitterStep : TestStep
     {
         #region Settings
         #region Enums for GUI Drop down menus
@@ -42,27 +42,27 @@ namespace Tap.Wlan.Demo
         public bool average { get; set; }
 
         [Display("Average Number", Group: "Analyzer Setup")]
-        public int Aver_Num { get; set; }
+        public int averageNumber { get; set; }
 
         [Unit("dB", UseEngineeringPrefix: true)]
         [Display("Trigger Level", Group: "Analyzer Setup", Description: "Sets absolute trigger level")]
-        public double ABS_Trig_Level { get; set; }
+        public double absTriggerLevel { get; set; }
 
         [Display("ISM Band", Group: "Analyzer Setup", Description:"Choose 2g or 5g depnding on wifi channel")]
-        public string ISM_Band { get; set; }
+        public string ismBand { get; set; }
 
         [Display("Channel", Group: "Chipset Setup")]
-        public int Channel { get; set; }
+        public int channel { get; set; }
 
         [Display("Rate Setting", Group: "Chipset Setup", Description:"Choose rate setting for wlan mode ")]
         public Rate_Setting rate { get; set; }
 
         [Display("OFDM Rate(MCS Index)", Group: "Chipset Setup", Description:"Choose rate for a,b,or MCS index for n,ac wlan mode ")]
-        public double OFDM_rate { get; set; }
+        public double ofdmRate { get; set; }
 
         [Unit("MHz", UseEngineeringPrefix: true)]
         [Display("Bandwidth", Group: "Chipset Setup")]
-        public int BW { get; set; }
+        public int bw { get; set; }
 
         [Display("Antenna TX Chain", Group: "Chipset Setup")]
         public int antenna { get; set; }
@@ -76,7 +76,7 @@ namespace Tap.Wlan.Demo
         // This property lets the instrument appear in the plugin Instrument field
         public SAInstrument signalAnalyzer { get; set; }
         #endregion
-        public Transmitter_Measurements()
+        public TransmitterStep()
         {
             // ToDo: Set default values for properties / settings.
 
@@ -84,25 +84,25 @@ namespace Tap.Wlan.Demo
             average = false;
 
             // Sets number of averages for measurements
-            Aver_Num = 10;
+            averageNumber = 10;
 
             // Sets cable correction for measurements
             loss = -1.4;
 
             // Sets ISM Band GUI Text Box to 5g
-            ISM_Band = "5g";
+            ismBand = "5g";
 
             // Sets GUI Text Box to Channel to 36 Used by WlanChannels to determine frequency if Set Top Box and Analyser
-            Channel = 36;
+            channel = 36;
 
             // Sets  the ODFM rate if a, b mode or MCS Index if n, ac mode on the Set Top Box
-            OFDM_rate = 7;
+            ofdmRate = 7;
 
             // Sets Rate GUI Drop Down to r which determines the modulation scheme set on Set Top Box
             rate = Rate_Setting.h;
 
             // Sets Bandwidth Text Box to 20 which determines the bandwidth on Set Top Box
-            BW = 20;
+            bw = 20;
 
             // Sets Antenna Tx Chain Text Box to 1 which determines antenna used (1 2 or 3) on Set Top Box
             antenna = 1;
@@ -111,7 +111,7 @@ namespace Tap.Wlan.Demo
             mode = "n";
 
             // Sets Trig Level Text Box to -25 which determines trigger level on analyser
-            ABS_Trig_Level = -26;
+            absTriggerLevel = -26;
 
             // Sets Start Power Text Box to 30 which determines the Start Power of the Set top Box
             pwrdB = 30;
@@ -124,10 +124,9 @@ namespace Tap.Wlan.Demo
         public override void Run()
         {
             // ToDo: Add test case code here
-            // RunChildSteps(); //If step has child steps.
-            signalAnalyzer.Set_Mode();
-            signalAnalyzer.Set_SEM_Conf();
-            UpgradeVerdict(Verdict.Pass);
+             RunChildSteps(); //If step has child steps.
+         
+           // UpgradeVerdict(Verdict.Pass);
         }
         public override void PostPlanRun()
         {

@@ -14,7 +14,7 @@ using Keysight.Tap;
 namespace Tap.Wlan.Demo
 {
     [Display("Modulation Analysis", Groups: new[] { "WLAN Demo", "Transmitter Measurements" }, Description: "Insert a description here")]
-    [AllowAsChildIn(typeof(Transmitter_Measurements))]
+    [AllowAsChildIn(typeof(TransmitterStep))]
     public class EVMTestStep : TestStep
     {
         #region Settings

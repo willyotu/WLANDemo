@@ -14,7 +14,7 @@ using Keysight.Tap;
 namespace Tap.Wlan.Demo
 {
     [Display("Channel Power", Groups: new[] { "WLAN Demo", "Transmitter Measurements" }, Description: "Insert a description here")]
-    [AllowAsChildIn(typeof(Transmitter_Measurements))]
+    [AllowAsChildIn(typeof(TransmitterStep))]
     public class CHPTestStep : TestStep
     {
         #region Settings

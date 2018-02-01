@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnalyzerModels.cs" />
-    <Compile Include="BenchSAInstrument.cs" />
+    <Compile Include="SAInstrument.cs" />
     <Compile Include="EVMTestStep.cs" />
     <Compile Include="MxaInstrument.cs" />
     <Compile Include="SAMeasurements.cs" />
@@ -59,7 +59,7 @@
     <Compile Include="Step.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Telnet.cs" />
-    <Compile Include="Transmitter Measurements.cs" />
+    <Compile Include="Transmitter Step.cs" />
     <Compile Include="WlanChannels.cs" />
     <None Include="App.config">
       <SubType>Designer</SubType>

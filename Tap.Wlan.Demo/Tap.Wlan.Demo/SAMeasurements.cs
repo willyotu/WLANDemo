@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace Tap.Wlan.Demo
 {
-    public class SAMeasurements
+    public class SAMeasurements 
     {
+
+        public SAMeasurements()
+        {
+           
+        }
         public class SEM_Data
         {
             public double TotalPowerRef; //1
@@ -25,22 +30,6 @@ namespace Tap.Wlan.Demo
             public double UpperFreqB;//29
         }
 
-        public SEM_Data MeasureSEMData()
-        {
-            AnalyzerModels config = new AnalyzerModels();
-            SAInstrument benchSA = new SAInstrument();
-            SEM_Data SEM_Data = new SEM_Data();
-
-            // Return SEM data into variable Results
-            string Results_SEM_DATA;
-            Results_SEM_DATA = benchSA.Fetch_SEMData();
-
-            // Split Results data into individual elements in an array
-            string[] iqCols = Results_SEM_DATA.Split(',');
-
-            // Extract SEM data element from array into SEM_Data variable
-            config.SEMMeasurementData();
-            return (SEM_Data);
-        }
+        
     }
 }
