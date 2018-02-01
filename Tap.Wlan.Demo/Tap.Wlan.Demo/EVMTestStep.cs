@@ -13,14 +13,14 @@ using Keysight.Tap;
 
 namespace Tap.Wlan.Demo
 {
-    [Display("Spectrual Emission Mask", Groups: new[] { "WLAN Demo", "Transmitter Measurements" }, Description: "Insert a description here")]
+    [Display("Modulation Analysis", Groups: new[] { "WLAN Demo", "Transmitter Measurements" }, Description: "Insert a description here")]
     [AllowAsChildIn(typeof(Transmitter_Measurements))]
-    public class SEMTestStep : TestStep
+    public class EVMTestStep : TestStep
     {
         #region Settings
         // ToDo: Add property here for each parameter the end user should be able to change
         #endregion
-        public SEMTestStep()
+        public EVMTestStep()
         {
             // ToDo: Set default values for properties / settings.
         }

@@ -51,8 +51,10 @@
   <ItemGroup>
     <Compile Include="AnalyzerModels.cs" />
     <Compile Include="BenchSAInstrument.cs" />
+    <Compile Include="EVMTestStep.cs" />
     <Compile Include="MxaInstrument.cs" />
     <Compile Include="SAMeasurements.cs" />
+    <Compile Include="CHPTestStep.cs" />
     <Compile Include="SEMTestStep.cs" />
     <Compile Include="Step.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
