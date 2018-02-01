@@ -63,7 +63,7 @@ namespace Tap.Wlan.Demo
             xAPP.WlanMode(bandwidth, mode.ToString());
             xAPP.SEMConfigure();
             xAPP.RFBLevel = rfbLevel.ToString();
-            xAPP.SEMTriggerSource();
+            //xAPP.SEMTriggerSource();
             xAPP.OptimizePowerRange();
 
             // Returns SEM Pass/Fail Test results
