@@ -359,7 +359,21 @@ namespace Tap.Wlan.Demo
             string[] iqCols = Results_SEM_DATA.Split(',');
 
             // Extract SEM data element from array into SEM_Data variable
-            config.SEMMeasurementData();
+            //config.SEMMeasurementData();
+            // Extract SEM data element from array into SEM_Data variable
+            Double.TryParse(iqCols[1], out SEM_Data.TotalPowerRef);
+            Double.TryParse(iqCols[12], out SEM_Data.LowerAbsPowerA);
+            Double.TryParse(iqCols[70], out SEM_Data.LowerDeltaLimitA);
+            Double.TryParse(iqCols[14], out SEM_Data.LowerFreqA);
+            Double.TryParse(iqCols[17], out SEM_Data.UpperAbsPowerA);
+            Double.TryParse(iqCols[71], out SEM_Data.UpperDeltaLimitA);
+            Double.TryParse(iqCols[19], out SEM_Data.UpperFreqA);
+            Double.TryParse(iqCols[22], out SEM_Data.LowerAbsPowerB);
+            Double.TryParse(iqCols[72], out SEM_Data.LowerDeltaLimitB);
+            Double.TryParse(iqCols[24], out SEM_Data.LowerFreqB);
+            Double.TryParse(iqCols[27], out SEM_Data.UpperAbsPowerB);
+            Double.TryParse(iqCols[73], out SEM_Data.UpperDeltaLimitB);
+            Double.TryParse(iqCols[29], out SEM_Data.UpperFreqB);
             return (SEM_Data);
         }
     }

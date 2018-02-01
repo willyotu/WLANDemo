@@ -85,18 +85,18 @@ namespace TapPlugin.PaceUK
              }
 
             // Log SEM Data into TAP message window
-            log.Info("  LowerAbsPowerA          : {0,12:0.00} dB", SEM_Data.LowerAbsPowerA);
-            log.Info("  LowerDeltaLimitA        : {0,70:0.00} dB", SEM_Data.LowerDeltaLimitA);
-            log.Info("  LowerFreqA              : {0,14:0.00} MHz", SEM_Data.LowerFreqA);
-            log.Info("  UpperAbsPowerA          : {0,17:0.00} dB", SEM_Data.UpperAbsPowerA);
-            log.Info("  UpperDeltaLimitA        : {0,71:0.00} dB", SEM_Data.UpperDeltaLimitA);
-            log.Info("  UpperFreqA              : {0,19:0.00} MHz", SEM_Data.UpperFreqA);
-            log.Info("  LowerAbsPowerB          : {0,22:0.00} dB", SEM_Data.LowerAbsPowerB);
-            log.Info("  LowerDeltaLimitB        : {0,72:0.00} dB", SEM_Data.LowerDeltaLimitB);
-            log.Info("  LowerFreqB              : {0,24:0.00} MHz", SEM_Data.LowerFreqB);
-            log.Info("  UpperAbsPowerB          : {0,27:0.00} dB", SEM_Data.UpperAbsPowerB);
-            log.Info("  UpperDeltaLimitB        : {0,73:0.00} dB", SEM_Data.UpperDeltaLimitB);
-            log.Info("  UpperFreqB              : {0,29:0.00} MHz", SEM_Data.UpperFreqB);
+            log.Info("LowerAbsPowerA          : {0,12:0.00} dB", SEM_Data.LowerAbsPowerA);
+            log.Info("LowerDeltaLimitA        : {0,70:0.00} dB", SEM_Data.LowerDeltaLimitA);
+            log.Info("LowerFreqA              : {0,14:0.00} MHz", SEM_Data.LowerFreqA);
+            log.Info("UpperAbsPowerA          : {0,17:0.00} dB", SEM_Data.UpperAbsPowerA);
+            log.Info("UpperDeltaLimitA        : {0,71:0.00} dB", SEM_Data.UpperDeltaLimitA);
+            log.Info("UpperFreqA              : {0,19:0.00} MHz", SEM_Data.UpperFreqA);
+            log.Info("LowerAbsPowerB          : {0,22:0.00} dB", SEM_Data.LowerAbsPowerB);
+            log.Info("LowerDeltaLimitB        : {0,72:0.00} dB", SEM_Data.LowerDeltaLimitB);
+            log.Info("LowerFreqB              : {0,24:0.00} MHz", SEM_Data.LowerFreqB);
+            log.Info("UpperAbsPowerB          : {0,27:0.00} dB", SEM_Data.UpperAbsPowerB);
+            log.Info("UpperDeltaLimitB        : {0,73:0.00} dB", SEM_Data.UpperDeltaLimitB);
+            log.Info("UpperFreqB              : {0,29:0.00} MHz", SEM_Data.UpperFreqB);
            
             // Change measurement type to Total Power Reference to log the measured power
             XAPP.Set_SEM_MeasTyp_TP();

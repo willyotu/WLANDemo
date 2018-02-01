@@ -45,22 +45,23 @@ namespace Tap.Wlan.Demo
 
             AppSettingsSection appSettingsSection = (AppSettingsSection)myConfig.GetSection("appSettings");
 
-            string TotalPowerRef = appSettingsSection.Settings["TotalPowerRef"].Value;
-            string LowerAbsPowerA  = appSettingsSection.Settings["LowerAbsPowerA"].Value;
-            string LowerDeltaLimitA = appSettingsSection.Settings["LowerDeltaLimitA"].Value;
-            string LowerFreqA = appSettingsSection.Settings["LowerFreqA"].Value;
-            string UpperAbsPowerA = appSettingsSection.Settings["UpperAbsPowerA"].Value;
-            string UpperDeltaLimitA = appSettingsSection.Settings["UpperDeltaLimitA"].Value;
-            string UpperFreqA = appSettingsSection.Settings["UpperFreqA"].Value;
-            string LowerAbsPowerB = appSettingsSection.Settings["LowerAbsPowerB"].Value;
-            string LowerDeltaLimitB = appSettingsSection.Settings["LowerDeltaLimitB"].Value;
-            string LowerFreqB = appSettingsSection.Settings["LowerFreqB"].Value;
-            string UpperAbsPowerB = appSettingsSection.Settings["UpperAbsPowerB"].Value;
-            string UpperDeltaLimitB = appSettingsSection.Settings["UpperDeltaLimitB"].Value;
-            string UpperFreqB = appSettingsSection.Settings["UpperFreqB"].Value;
-            
+            //string TotalPowerRef = appSettingsSection.Settings["TotalPowerRef"].Value;
+           
+            //string LowerAbsPowerA  = appSettingsSection.Settings["LowerAbsPowerA"].Value;
+            //string LowerDeltaLimitA = appSettingsSection.Settings["LowerDeltaLimitA"].Value;
+            //string LowerFreqA = appSettingsSection.Settings["LowerFreqA"].Value;
+            //string UpperAbsPowerA = appSettingsSection.Settings["UpperAbsPowerA"].Value;
+            //string UpperDeltaLimitA = appSettingsSection.Settings["UpperDeltaLimitA"].Value;
+            //string UpperFreqA = appSettingsSection.Settings["UpperFreqA"].Value;
+            //string LowerAbsPowerB = appSettingsSection.Settings["LowerAbsPowerB"].Value;
+            //string LowerDeltaLimitB = appSettingsSection.Settings["LowerDeltaLimitB"].Value;
+            //string LowerFreqB = appSettingsSection.Settings["LowerFreqB"].Value;
+            //string UpperAbsPowerB = appSettingsSection.Settings["UpperAbsPowerB"].Value;
+            //string UpperDeltaLimitB = appSettingsSection.Settings["UpperDeltaLimitB"].Value;
+            //string UpperFreqB = appSettingsSection.Settings["UpperFreqB"].Value;
 
-            string sem1  = appSettingsSection.Settings["sem1"].Value;
+
+            string sem1 = appSettingsSection.Settings["sem1"].Value;
             string sem12 = appSettingsSection.Settings["sem12"].Value;
             string sem70 = appSettingsSection.Settings["sem70"].Value;
             string sem14 = appSettingsSection.Settings["sem14"].Value;
@@ -73,6 +74,8 @@ namespace Tap.Wlan.Demo
             string sem27 = appSettingsSection.Settings["sem27"].Value;
             string sem73 = appSettingsSection.Settings["sem73"].Value;
             string sem29 = appSettingsSection.Settings["sem29"].Value;
+
+
         }
     }
 }

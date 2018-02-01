@@ -19,7 +19,7 @@ namespace Tap.Wlan.Demo
     {
         #region Settings
         // ToDo: Add property here for each parameter the end user should be able to change
-       // public Instrument xAPP;
+        // public Instrument xAPP;
         #endregion
         public SEMTestStep()
         {
@@ -68,14 +68,44 @@ namespace Tap.Wlan.Demo
             //  M9391A_XAPPS.SEM_Results SEM_Results = xAPP.MeasureSEM(average, Aver_Num);
 
             // Returns SEM data results
+            SEMDataResults(xAPP);
+        }
+
+        private void SEMDataResults(SAInstrument xAPP)
+        {
             SAMeasurements.SEM_Data SEM_Data = xAPP.MeasureSEMData();
+            var SEMDataSettings = new string[] {
+                "LowerAbsPowerA          : {0,12:0.00} dB",
+                 "LowerDeltaLimitA        : {0,70:0.00} dB",
+                 "LowerFreqA              : {0,14:0.00} MHz",
+                 "UpperAbsPowerA          : {0,17:0.00} dB",
+                 "UpperDeltaLimitA        : {0,71:0.00} dB",
+                 "UpperFreqA              : {0,19:0.00} MHz",
+                 "LowerAbsPowerB          : {0,22:0.00} dB",
+                 "LowerDeltaLimitB        : {0,72:0.00} dB",
+                 "LowerFreqB              : {0,24:0.00} MHz",
+                 "UpperAbsPowerB          : {0,27:0.00} dB",
+                 "UpperDeltaLimitB        : {0,73:0.00} dB",
+                 "UpperFreqB              : {0,29:0.00} MHz "
 
-            // Log SEM results into TAP message window
-            //Log_SEM_TAP(log, SEM_Results, SEM_Data);
+            };
 
-
-            // Code to Increase Power if Channel Power measured does not exceed the SEM limit Or decrese power if measured power exceeds SEM limit
-            //Inc_Dec_PWR_SEM(log, SEM_Results, BCM4366, frequency);
+            var SEMData = new double[] {
+                 SEM_Data.LowerAbsPowerA,
+                 SEM_Data.LowerDeltaLimitA,
+                 SEM_Data.LowerFreqA,
+                 SEM_Data.UpperAbsPowerA,
+                 SEM_Data.UpperDeltaLimitA,
+                 SEM_Data.UpperFreqA,
+                 SEM_Data.LowerAbsPowerB,
+                 SEM_Data.LowerDeltaLimitB,
+                 SEM_Data.LowerFreqB,
+                 SEM_Data.UpperAbsPowerB,
+                 SEM_Data.UpperDeltaLimitB,
+                 SEM_Data.UpperFreqB
+            };
+            Results.PublishTable("SEM Data", new List<string> { "SEM Data" }, SEMData);
         }
     }
-}
+ }
+      
