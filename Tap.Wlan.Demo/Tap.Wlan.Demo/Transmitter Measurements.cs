@@ -79,6 +79,42 @@ namespace Tap.Wlan.Demo
         public Transmitter_Measurements()
         {
             // ToDo: Set default values for properties / settings.
+
+            // Sets averaging state for measurements
+            average = false;
+
+            // Sets number of averages for measurements
+            Aver_Num = 10;
+
+            // Sets cable correction for measurements
+            loss = -1.4;
+
+            // Sets ISM Band GUI Text Box to 5g
+            ISM_Band = "5g";
+
+            // Sets GUI Text Box to Channel to 36 Used by WlanChannels to determine frequency if Set Top Box and Analyser
+            Channel = 36;
+
+            // Sets  the ODFM rate if a, b mode or MCS Index if n, ac mode on the Set Top Box
+            OFDM_rate = 7;
+
+            // Sets Rate GUI Drop Down to r which determines the modulation scheme set on Set Top Box
+            rate = Rate_Setting.h;
+
+            // Sets Bandwidth Text Box to 20 which determines the bandwidth on Set Top Box
+            BW = 20;
+
+            // Sets Antenna Tx Chain Text Box to 1 which determines antenna used (1 2 or 3) on Set Top Box
+            antenna = 1;
+
+            // Sets BCM4366 Mode GUI Drop Down to r which determines the modulation scheme set on Set Top Box
+            mode = "n";
+
+            // Sets Trig Level Text Box to -25 which determines trigger level on analyser
+            ABS_Trig_Level = -26;
+
+            // Sets Start Power Text Box to 30 which determines the Start Power of the Set top Box
+            pwrdB = 30;
         }
         public override void PrePlanRun()
         {
