@@ -32,8 +32,7 @@ namespace Tap.Wlan.Demo
         public SAInstrument()
         {
             // ToDo: Set default values for properties / settings.
-            
-            
+       
         }
 
         /// <summary>

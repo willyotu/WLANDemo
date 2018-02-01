@@ -26,7 +26,8 @@ namespace Tap.Wlan.Demo
             string analyzer5 = appSettingsSection.Settings["modSA2"].Value;
             string analyzer6 = appSettingsSection.Settings["modSA3"].Value;
             string analyzer7 = appSettingsSection.Settings["modSA4"].Value;
-        
+            string analyzer8 = appSettingsSection.Settings["modSA5"].Value;
+
             List<string> analyzer = new List<string>();
             analyzer.Add(analyzer1);
             analyzer.Add(analyzer2);
@@ -35,6 +36,7 @@ namespace Tap.Wlan.Demo
             analyzer.Add(analyzer5);
             analyzer.Add(analyzer6);
             analyzer.Add(analyzer7);
+            analyzer.Add(analyzer8);
             return analyzer;
         }
         public void SEMMeasurementData()

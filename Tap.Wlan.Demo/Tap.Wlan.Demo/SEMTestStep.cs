@@ -41,7 +41,6 @@ namespace Tap.Wlan.Demo
 
         private void SEMTestRun()//System.Diagnostics.TraceSource log,  double frequency
         {
-
             SAMeasurements sem = new SAMeasurements();
             BCM4366 chipset = GetParent<TransmitterStep>().bcm4366;
             SAInstrument xAPP = GetParent<TransmitterStep>().signalAnalyzer;
