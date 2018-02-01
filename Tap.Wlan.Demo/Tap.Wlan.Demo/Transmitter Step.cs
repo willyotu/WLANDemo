@@ -75,6 +75,8 @@ namespace Tap.Wlan.Demo
 
         // This property lets the instrument appear in the plugin Instrument field
         public SAInstrument signalAnalyzer { get; set; }
+
+        public BCM4366 bcm4366 { get; set; }
         #endregion
         public TransmitterStep()
         {

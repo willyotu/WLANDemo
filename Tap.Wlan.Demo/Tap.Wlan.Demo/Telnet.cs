@@ -11,7 +11,8 @@ using System.Net.Sockets;
 using System.Text;
 
 
-namespace TapPlugin.PaceUK
+namespace Tap.Wlan.Demo
+
 {
     internal enum Verbs
     {

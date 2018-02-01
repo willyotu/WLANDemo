@@ -24,15 +24,12 @@ namespace Tap.Wlan.Demo
         public SEMTestStep()
         {
             // ToDo: Set default values for properties / settings.
-          
-
         }
 
         public override void PrePlanRun()
         {
             base.PrePlanRun();
             // ToDo: Optionally add any setup code this step needs to run before the testplan starts
-          
         }
 
         public override void Run()
@@ -46,24 +43,26 @@ namespace Tap.Wlan.Demo
         {
 
             SAMeasurements sem = new SAMeasurements();
+            BCM4366 chipset = GetParent<TransmitterStep>().bcm4366;
             SAInstrument xAPP = GetParent<TransmitterStep>().signalAnalyzer;
-           
-            double chipsetPowerLevel = GetParent<TransmitterStep>().pwrdB;
             double rfbLevel = GetParent<TransmitterStep>().absTriggerLevel;
             int bandwidth = GetParent<TransmitterStep>().bw;
             int channel = GetParent<TransmitterStep>().channel;
             string mode = GetParent<TransmitterStep>().mode;
 
             //Set set-top power level to pwrdB value
-            // BCM4366.BCM4366_SetPowerLevel(chipsetPowerLevel);
+            double chipsetPowerLevel = GetParent<TransmitterStep>().pwrdB;
+            chipset.bcm4366SetPowerLevel(chipsetPowerLevel);
 
-            // Initialise SEM settings    
-            //  xAPP.CenterFrequency = (frequency * 1000000).ToString();
+            // Initialise SEM settings  
+            // Select frequency based on bandwidth
+            double frequency = chipset.choose_freq(bandwidth, channel);
+            xAPP.centerFrequency = (frequency * 1000000).ToString();
             xAPP.MeasurementMode();
             xAPP.WlanMode(bandwidth, mode.ToString());
             xAPP.SEMConfigure();
             xAPP.RFBLevel = rfbLevel.ToString();
-            xAPP.SEMTriggerSource();
+            //xAPP.SEMTriggerSource();
             xAPP.OptimizePowerRange();
 
             // Returns SEM Pass/Fail Test results

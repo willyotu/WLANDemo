@@ -130,7 +130,7 @@ namespace Tap.Wlan.Demo
         }
 
         [XmlIgnore]
-        public string CenterFrequency
+        public string centerFrequency
         {
             set { ScpiCommand(":FREQ:CENT {0}", value); }
             get
