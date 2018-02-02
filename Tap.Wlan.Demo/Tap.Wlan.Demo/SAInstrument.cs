@@ -179,50 +179,50 @@ namespace Tap.Wlan.Demo
         #endregion
 
         #region Modulation Analysis settings
-        public void Set_EVM_Conf()
+        public void EVMConfigure()
         {
             ScpiCommand("CONF:EVM");
         }
         //Sets averaging for Modulation Analysis
-        public bool Set_EVM_AvgState(bool Average, int Aver_Num)
+        public bool EVMAveragingState(bool average, int numberOfAverages)
         {
-            ScpiCommand("EVM:AVER {0}", Average);
-            string scpi = ("EVM:AVER:COUN " + Aver_Num.ToString());
-            return Average;
+            ScpiCommand("EVM:AVER {0}", average);
+            string scpi = ("EVM:AVER:COUN " + numberOfAverages.ToString());
+            return average;
         }
-        public void Set_EVM_Limits(double Freq_Error, double SymClk_Error, double CFLeak)
+        public void EVMLimits(double freqError, double symbolClkError, double cFLeak)
         {
-            string scpi = (":CALCulate:EVM:LIMit:FERRor " + Freq_Error.ToString());
+            string scpi = (":CALCulate:EVM:LIMit:FERRor " + freqError.ToString());
             ScpiCommand(scpi);
 
-            string scpi2 = (":CALCulate:EVM:LIMit:CLKerror " + SymClk_Error.ToString());
+            string scpi2 = (":CALCulate:EVM:LIMit:CLKerror " + symbolClkError.ToString());
             ScpiCommand(scpi2);
 
-            string scpi3 = (":CALCulate:EVM:LIMit:CFLeakage " + CFLeak.ToString());
+            string scpi3 = (":CALCulate:EVM:LIMit:CFLeakage " + cFLeak.ToString());
             ScpiCommand(scpi3);
         }
-        public void Set_EVM_Trig()
+        public void EVMTrigger()
         {
             ScpiCommand("TRIG:EVM:SOUR RFB");
         }
-        public void Set_EVM_Tracking()
+        public void EVMTracking()
         {
             ScpiCommand("CALC:EVM:PIL:TRAC:AMPL 1");
             ScpiCommand("CALC:EVM:PIL:TRAC:PHAS 1");
             ScpiCommand("CALC:EVM:PIL:TRAC:TIM 1");
         }
-        public void Num_Syms(int Symbols)
+        public void NumberOfSymbols(int symbols)
         {
-            string syms = "EVM:TIME:RES:LENG " + Symbols.ToString();
+            string syms = "EVM:TIME:RES:LENG " + symbols.ToString();
             ScpiCommand(syms);
         }
         //Sets the length of time for the burst search 
-        public void Set_Meas_Time(string Search_Len)
+        public void BurstSearchLength(string searchLength)
         {
-            string search_len = "EVM:TIME:SLEN " + Search_Len.ToString();
+            string search_len = "EVM:TIME:SLEN " + searchLength.ToString();
             ScpiCommand(search_len);
         }
-        public string Fetch_EVM()
+        public string FetchEVM()
         {
             return (ScpiQuery("FETCH:EVM1?"));
         }
@@ -404,6 +404,67 @@ namespace Tap.Wlan.Demo
             Double.TryParse(iqCols[29], out SEM_Data.UpperFreqB);
             return (SEM_Data);
         }
+        #endregion
+
+        #region EVM Measurements
+        public SAMeasurements.EVMResults MeasureEvm(bool average, int numberOfAverages)
+        {
+            SAMeasurements.EVMResults EVMResults = new SAMeasurements.EVMResults();
+
+            EVMAveragingState(average, numberOfAverages);
+
+            // Return EVM results data into variable Results
+            string resultsEVM;
+            resultsEVM = FetchEVM();
+
+            // Split Results data into individual elements in an array
+            string[] iqCols = resultsEVM.Split(',');
+
+            // Extract EVM result elements from array into EVMResult variable
+            Double.TryParse(iqCols[0], out EVMResults.RMS_EVM_MAX_DB);
+            Double.TryParse(iqCols[1], out EVMResults.RMS_EVM_AVG_DB);
+            Double.TryParse(iqCols[2], out EVMResults.PEAK_EVM_MAX_DB);
+            Double.TryParse(iqCols[3], out EVMResults.PEAK_EVM_AVG_DB);
+            Double.TryParse(iqCols[4], out EVMResults.MAX_PEAK_EVM_INDEX);
+            Double.TryParse(iqCols[5], out EVMResults.PEAK_EVM_INDEX);
+            Double.TryParse(iqCols[6], out EVMResults.FREQ_ERR_MAX_HZ);
+            Double.TryParse(iqCols[7], out EVMResults.FREQ_ERR_AVG_HZ);
+            Double.TryParse(iqCols[8], out EVMResults.FREQ_ERR_MAX_PPM);
+            Double.TryParse(iqCols[9], out EVMResults.FREQ_ERR_AVG_PPM);
+            Double.TryParse(iqCols[10], out EVMResults.Symbol_Clock_ERR_MAX);
+            Double.TryParse(iqCols[11], out EVMResults.Symbol_Clock_ERR_AVG);
+            Double.TryParse(iqCols[12], out EVMResults.IQ_Origin_Offset_MAX);
+            Double.TryParse(iqCols[13], out EVMResults.IQ_Origin_Offset_AVG);
+            Double.TryParse(iqCols[14], out EVMResults.Gain_Imbalance_MAX);
+            Double.TryParse(iqCols[15], out EVMResults.Gain_Imbalance_AVG);
+            Double.TryParse(iqCols[16], out EVMResults.Quad_Error_MAX_Degrees);
+            Double.TryParse(iqCols[17], out EVMResults.Quad_Error_AVG_Degrees);
+            Double.TryParse(iqCols[18], out EVMResults.AVG_Burst_Power_MAX);
+            Double.TryParse(iqCols[19], out EVMResults.AVG_Burst_Power_AVG);
+            Double.TryParse(iqCols[20], out EVMResults.Peak_Burst_Power_MAX);
+            Double.TryParse(iqCols[21], out EVMResults.Peak_Burst_Power_AVG);
+            Double.TryParse(iqCols[22], out EVMResults.Peak_to_AVG_BurstPowerRatio_MAX);
+            Double.TryParse(iqCols[23], out EVMResults.Peak_to_AVG_BurstPowerRatio_AVG);
+            Double.TryParse(iqCols[24], out EVMResults.Data_MOD_Format);
+            Double.TryParse(iqCols[25], out EVMResults.Data_Bit_Rate);
+            Double.TryParse(iqCols[26], out EVMResults.Pilot_EVM_MAX_DB);
+            Double.TryParse(iqCols[27], out EVMResults.Pilot_EVM_AVG_DB);
+            Double.TryParse(iqCols[28], out EVMResults.DATA_EVM_MAX_DB);
+            Double.TryParse(iqCols[29], out EVMResults.DATA_EVM_AVG_DB);
+            Double.TryParse(iqCols[30], out EVMResults.IQ_Timing_Skew_MAX);
+            Double.TryParse(iqCols[31], out EVMResults.IQ_Timing_Skew_AVG);
+            Double.TryParse(iqCols[32], out EVMResults.RMS_EVM_MAX);
+            Double.TryParse(iqCols[33], out EVMResults.RMS_EVM_AVG);
+            Double.TryParse(iqCols[34], out EVMResults.PEAK_EVM_MAX);
+            Double.TryParse(iqCols[35], out EVMResults.PEAK_EVM_AVG);
+            Double.TryParse(iqCols[36], out EVMResults.Pilot_EVM_MAX);
+            Double.TryParse(iqCols[37], out EVMResults.Pilot_EVM_AVG);
+            Double.TryParse(iqCols[38], out EVMResults.DATA_EVM_MAX);
+            Double.TryParse(iqCols[39], out EVMResults.DATA_EVM_AVG);
+            return (EVMResults);
+
+        }
+
         #endregion
     }
 }

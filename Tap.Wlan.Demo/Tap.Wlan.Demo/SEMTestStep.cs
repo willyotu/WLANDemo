@@ -39,7 +39,7 @@ namespace Tap.Wlan.Demo
             UpgradeVerdict(Keysight.Tap.Verdict.Pass);
         }
 
-        private void SEMTestRun()//System.Diagnostics.TraceSource log,  double frequency
+        private void SEMTestRun()
         {
             SAMeasurements sem = new SAMeasurements();
             BCM4366 chipset = GetParent<TransmitterStep>().bcm4366;
