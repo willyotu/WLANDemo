@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Tap.Wlan.Demo
 {
-    public class SAMeasurements 
+    public class SAMeasurements
     {
 
         public SAMeasurements()
         {
-           
+
         }
         public class SEM_Data
         {
@@ -30,6 +30,15 @@ namespace Tap.Wlan.Demo
             public double UpperFreqB;//29
         }
 
-        
+        public class SEMLimitTest
+        {
+            public Boolean NegOFFSFREQA;//4
+            public Boolean PosOFFSFREQA;//5
+            public Boolean NegOFFSFREQB;//6
+            public Boolean PosOFFSFREQB;//7
+        }
+
+
+       
     }
 }

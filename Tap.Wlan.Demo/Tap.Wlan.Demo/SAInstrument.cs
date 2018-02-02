@@ -240,12 +240,18 @@ namespace Tap.Wlan.Demo
         }
 
         //Sets averaging for SEM
-        public bool SEMAveragingState(bool Average, int Aver_Num)
+        public bool SEMAveragingState(bool average, int numberOfAverages)
         {
-            ScpiCommand("SEM:AVER {0}", Average);
-            string scpi = ("SEM:AVER:COUN " + Aver_Num.ToString());
-            ScpiCommand(scpi);
-            return Average;
+            if (average)
+            {
+                ScpiCommand("SEM:AVER ON");
+                ScpiCommand("SEM:AVER:COUN " + numberOfAverages.ToString());
+            }
+            else
+            {
+                ScpiCommand("SEM:AVER OFF");
+            }
+            return average;
         }
         public void SEMTriggerSource()
         {
@@ -346,10 +352,32 @@ namespace Tap.Wlan.Demo
         }
         #endregion
 
+        #region SEM Measurements
+        public SAMeasurements.SEMLimitTest MeasureSEMLimit(bool average, int NumberOfAverages)
+        {
+            SAMeasurements.SEMLimitTest SEMLimitResults = new SAMeasurements.SEMLimitTest();
+
+            SEMAveragingState(average, NumberOfAverages);
+
+            // Return SEM data into variable Results
+            string ResultsSEMPassFail;
+            ResultsSEMPassFail = FetchSEM();
+
+            // Split Results data into individual elements in an array
+            string[] iqCols = ResultsSEMPassFail.Split(',');
+
+            // Extract SEM resuts element from array into SEM_Results variable
+            Boolean.TryParse(iqCols[4], out SEMLimitResults.NegOFFSFREQA);
+            Boolean.TryParse(iqCols[5], out SEMLimitResults.PosOFFSFREQA);
+            Boolean.TryParse(iqCols[6], out SEMLimitResults.NegOFFSFREQB);
+            Boolean.TryParse(iqCols[7], out SEMLimitResults.PosOFFSFREQB);
+            return (SEMLimitResults);
+
+        }
         public SAMeasurements.SEM_Data MeasureSEMData()
         {
             AnalyzerModels config = new AnalyzerModels();
-           
+
             SAMeasurements.SEM_Data SEM_Data = new SAMeasurements.SEM_Data();
             // Return SEM data into variable Results
             string Results_SEM_DATA;
@@ -376,5 +404,6 @@ namespace Tap.Wlan.Demo
             Double.TryParse(iqCols[29], out SEM_Data.UpperFreqB);
             return (SEM_Data);
         }
+        #endregion
     }
 }

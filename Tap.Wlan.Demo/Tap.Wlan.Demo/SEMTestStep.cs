@@ -54,7 +54,7 @@ namespace Tap.Wlan.Demo
             chipset.bcm4366SetPowerLevel(chipsetPowerLevel);
 
             // Initialise SEM settings  
-            // Select frequency based on bandwidth
+            // Select frequency based on channel
             double frequency = chipset.choose_freq(bandwidth, channel);
             xAPP.centerFrequency = (frequency * 1000000).ToString();
             xAPP.MeasurementMode();
@@ -65,46 +65,70 @@ namespace Tap.Wlan.Demo
             xAPP.OptimizePowerRange();
 
             // Returns SEM Pass/Fail Test results
-            //  M9391A_XAPPS.SEM_Results SEM_Results = xAPP.MeasureSEM(average, Aver_Num);
+            SEMLimitTestResults(xAPP);
 
             // Returns SEM data results
             SEMDataResults(xAPP);
         }
 
+        private void SEMLimitTestResults(SAInstrument xAPP)
+        {
+            bool average = GetParent<TransmitterStep>().average;
+            int numberOfAverages = GetParent<TransmitterStep>().numberOfAverages;
+            SAMeasurements.SEMLimitTest semLimitTest = xAPP.MeasureSEMLimit(average,numberOfAverages);
+            var SEMLimit = new string[] {
+                "Negative Offset Frequency (A) ",
+                "Positive Offset Frequency (A) ",
+                "Negative Offset Frequency (B) ",
+                "Positive Offset Frequency (B) "
+                };
+
+
+            var SEMResult = new bool[] {
+                semLimitTest.NegOFFSFREQA,
+                semLimitTest.PosOFFSFREQA,
+                semLimitTest.NegOFFSFREQB,
+                semLimitTest.PosOFFSFREQB
+                };
+            Results.PublishTable("SEM Limit Test", new List<string> { "SEM Offset Limit", "SEMResult"}, SEMLimit, SEMResult);
+        }
         private void SEMDataResults(SAInstrument xAPP)
         {
             SAMeasurements.SEM_Data SEM_Data = xAPP.MeasureSEMData();
             var SEMDataSettings = new string[] {
-                "LowerAbsPowerA          : {0,12:0.00} dB",
-                 "LowerDeltaLimitA        : {0,70:0.00} dB",
-                 "LowerFreqA              : {0,14:0.00} MHz",
-                 "UpperAbsPowerA          : {0,17:0.00} dB",
-                 "UpperDeltaLimitA        : {0,71:0.00} dB",
-                 "UpperFreqA              : {0,19:0.00} MHz",
-                 "LowerAbsPowerB          : {0,22:0.00} dB",
-                 "LowerDeltaLimitB        : {0,72:0.00} dB",
-                 "LowerFreqB              : {0,24:0.00} MHz",
-                 "UpperAbsPowerB          : {0,27:0.00} dB",
-                 "UpperDeltaLimitB        : {0,73:0.00} dB",
-                 "UpperFreqB              : {0,29:0.00} MHz "
-
+                 "LowerAbsPowerA  ",
+                 "LowerDeltaLimitA",
+                 "LowerFreqA      ",
+                 "UpperAbsPowerA  ",
+                 "UpperDeltaLimitA",
+                 "UpperFreqA      ",
+                 "LowerAbsPowerB  ",
+                 "LowerDeltaLimitB",
+                 "LowerFreqB      ",
+                 "UpperAbsPowerB  ",
+                 "UpperDeltaLimitB",
+                 "UpperFreqB      "
             };
 
             var SEMData = new double[] {
-                 SEM_Data.LowerAbsPowerA,
-                 SEM_Data.LowerDeltaLimitA,
+                 Math.Round(SEM_Data.LowerAbsPowerA,2),
+                 Math.Round(SEM_Data.LowerDeltaLimitA,2),
                  SEM_Data.LowerFreqA,
-                 SEM_Data.UpperAbsPowerA,
-                 SEM_Data.UpperDeltaLimitA,
+                 Math.Round(SEM_Data.UpperAbsPowerA,2),
+                 Math.Round(SEM_Data.UpperDeltaLimitA,2),
                  SEM_Data.UpperFreqA,
-                 SEM_Data.LowerAbsPowerB,
-                 SEM_Data.LowerDeltaLimitB,
+                 Math.Round(SEM_Data.LowerAbsPowerB,2),
+                 Math.Round(SEM_Data.LowerDeltaLimitB,2),
                  SEM_Data.LowerFreqB,
-                 SEM_Data.UpperAbsPowerB,
-                 SEM_Data.UpperDeltaLimitB,
-                 SEM_Data.UpperFreqB
+                 Math.Round(SEM_Data.UpperAbsPowerB,2),
+                 Math.Round(SEM_Data.UpperDeltaLimitB,2),
+                 SEM_Data.UpperFreqB,
             };
-            Results.PublishTable("SEM Data", new List<string> { "SEM Data" }, SEMData);
+
+            var SEMDataUnit = new string[] {
+                 "dB","dB","Hz","dB","dB","Hz","dB","dB","Hz","dB","dB","Hz"
+            };
+            Results.PublishTable("SEM Data", new List<string> {"SEMDataSettings", "SEM Data", "SEM Data Unit"}, SEMDataSettings, SEMData, SEMDataUnit);
         }
     }
  }
