@@ -36,7 +36,7 @@ namespace Tap.Wlan.Demo
         {
             // ToDo: Add test case code here
             SEMTestRun();
-            UpgradeVerdict(Verdict.Pass);
+            UpgradeVerdict(Keysight.Tap.Verdict.Pass);
         }
 
         private void SEMTestRun()//System.Diagnostics.TraceSource log,  double frequency
@@ -75,23 +75,43 @@ namespace Tap.Wlan.Demo
         {
             bool average = GetParent<TransmitterStep>().average;
             int numberOfAverages = GetParent<TransmitterStep>().numberOfAverages;
-            SAMeasurements.SEMLimitTest semLimitTest = xAPP.MeasureSEMLimit(average,numberOfAverages);
+            SAMeasurements.SEMLimitTest semLimitTest = xAPP.MeasureSEMLimit(average, numberOfAverages);
+
+
             var SEMLimit = new string[] {
                 "Negative Offset Frequency (A) ",
                 "Positive Offset Frequency (A) ",
                 "Negative Offset Frequency (B) ",
                 "Positive Offset Frequency (B) "
                 };
-
-
-            var SEMResult = new bool[] {
+            var SEMResult = new double[] {
                 semLimitTest.NegOFFSFREQA,
                 semLimitTest.PosOFFSFREQA,
                 semLimitTest.NegOFFSFREQB,
                 semLimitTest.PosOFFSFREQB
                 };
-            Results.PublishTable("SEM Limit Test", new List<string> { "SEM Offset Limit", "SEMResult"}, SEMLimit, SEMResult);
+            Results.PublishTable("SEM Limit Test", new List<string> { "SEM Offset Limit", "SEMResult" }, SEMLimit, SEMResult);
+            VerdictPassFail(semLimitTest);
         }
+
+        private Verdict VerdictPassFail(SAMeasurements.SEMLimitTest semLimitTest)
+        {
+            Log.Info("  Running Spectrum Emission Mask Test ");
+            Log.Info("  Negative Offset Frequency (A)        : {0,4:0.00} ", semLimitTest.NegOFFSFREQA);
+            Log.Info("  Positive Offset Frequency (A)        : {0,5:0.00} ", semLimitTest.PosOFFSFREQA);
+            Log.Info("  Negative Offset Frequency (B)        : {0,6:0.00} ", semLimitTest.NegOFFSFREQB);
+            Log.Info("  Positive Offset Frequency (B)        : {0,7:0.00} ", semLimitTest.PosOFFSFREQB);
+            if (semLimitTest.NegOFFSFREQA == 0 & semLimitTest.PosOFFSFREQA == 0 & semLimitTest.NegOFFSFREQB == 0 & semLimitTest.PosOFFSFREQB == 0)
+            {
+                Verdict = Verdict.Pass;
+            }
+            else
+            {
+                Verdict = Verdict.Fail;
+            }
+            return Verdict;
+        }
+
         private void SEMDataResults(SAInstrument xAPP)
         {
             SAMeasurements.SEM_Data SEM_Data = xAPP.MeasureSEMData();

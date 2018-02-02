@@ -367,10 +367,10 @@ namespace Tap.Wlan.Demo
             string[] iqCols = ResultsSEMPassFail.Split(',');
 
             // Extract SEM resuts element from array into SEM_Results variable
-            Boolean.TryParse(iqCols[4], out SEMLimitResults.NegOFFSFREQA);
-            Boolean.TryParse(iqCols[5], out SEMLimitResults.PosOFFSFREQA);
-            Boolean.TryParse(iqCols[6], out SEMLimitResults.NegOFFSFREQB);
-            Boolean.TryParse(iqCols[7], out SEMLimitResults.PosOFFSFREQB);
+            Double.TryParse(iqCols[4], out SEMLimitResults.NegOFFSFREQA);
+            Double.TryParse(iqCols[5], out SEMLimitResults.PosOFFSFREQA);
+            Double.TryParse(iqCols[6], out SEMLimitResults.NegOFFSFREQB);
+            Double.TryParse(iqCols[7], out SEMLimitResults.PosOFFSFREQB);
             return (SEMLimitResults);
 
         }

@@ -32,10 +32,10 @@ namespace Tap.Wlan.Demo
 
         public class SEMLimitTest
         {
-            public Boolean NegOFFSFREQA;//4
-            public Boolean PosOFFSFREQA;//5
-            public Boolean NegOFFSFREQB;//6
-            public Boolean PosOFFSFREQB;//7
+            public double NegOFFSFREQA;//4
+            public double PosOFFSFREQA;//5
+            public double NegOFFSFREQB;//6
+            public double PosOFFSFREQB;//7
         }
 
 
