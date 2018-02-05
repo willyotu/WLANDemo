@@ -19,27 +19,28 @@ namespace Tap.Wlan.Demo
     {
         #region Settings
         // ToDo: Add property here for each parameter the end user should be able to change
+        [Unit("ms", UseEngineeringPrefix: true)]
         [Display("Search Length(EVM)")]
-        public string searchLength { get; set; }
+        public double searchLength { get; set; }
 
         [Display("No. Symbols", Description: "Enter the number of symbols to analyze")]
         public int symbols { get; set; }
 
         [Unit("dB", UseEngineeringPrefix: true)]
         [Display("RMS EVM(Avg) Limit ", Group: "Limit")]
-        public double RmsEvmAvgLimit { get; set; }
+        public double rmsEvmAvgLimit { get; set; }
         #endregion
         public EVMTestStep()
         {
             // ToDo: Set default values for properties / settings.
             // Sets search length for burst 
-            searchLength = "10ms";
+            searchLength = 10;
             // Sets no. of symbols to analyze 
             symbols = 100;
             // Sets RMS EVM Average Limit Text Box to -27 which determines the pass fail point for EVM test
-            RmsEvmAvgLimit = -27;
+            rmsEvmAvgLimit = -27;
         }
-
+        
         public override void Run()
         {
             EVMTestRun();
@@ -58,7 +59,7 @@ namespace Tap.Wlan.Demo
 
             // Initialise EVM settings
             xAPP.EVMConfigure();
-            xAPP.EVMTrigger();
+            //xAPP.EVMTrigger();
             xAPP.BurstSearchLength(searchLength);
             xAPP.NumberOfSymbols(symbols);
             xAPP.EVMTracking();
@@ -112,7 +113,19 @@ namespace Tap.Wlan.Demo
             var EVMResultsUnit = new string[] {
                  "dB","dB","dB","dB","dB","dB","dB","dB","dB","dB"
             };
-            Results.PublishTable("SEM Data", new List<string> { "EVM Metrics", "EVMResults", "EVM Unit" }, EVMMetrics, EVMResults, EVMResultsUnit);
+
+            if (evmResults.RMS_EVM_AVG_DB < rmsEvmAvgLimit)
+            {
+                UpgradeVerdict(Verdict.Pass);
+            }
+            else
+            {
+                UpgradeVerdict(Verdict.Fail);
+            }
+           
+            Results.PublishTable("EVM Data", new List<string> { "EVM Metrics", "EVMResults", "EVM Unit"}, EVMMetrics, EVMResults, EVMResultsUnit);
+
+                        
         }
     }
 }

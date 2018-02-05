@@ -30,47 +30,44 @@ namespace Tap.Wlan.Demo
         };
         #endregion
         // ToDo: Add property here for each parameter the end user should be able to change
-        [Unit("Hz", UseEngineeringPrefix: true)]
-        [Display("Center Frequency", Group: "Analyzer Setup", Description: " Enter carrier frequency ")]
-        public double CenterFrequency { get; set; }
-
         [Unit("dB", UseEngineeringPrefix: true)]
-        [Display("Cable Loss", Group: "Analyzer Setup", Description: " Enter cable loss value ")]
+        [Display("Cable Loss", Group: "Analyzer Setup", Description: " Enter cable loss value ", Order: 1.2)]
         public double loss { get; set; }
 
-        [Display("Average State", Group: "Analyzer Setup")]
+        [Display("Average State", Group: "Analyzer Setup", Order: 1.3)]
         public bool average { get; set; }
-
-        [Display("Average Number", Group: "Analyzer Setup")]
+               
+        [Display("Average Number", Group: "Analyzer Setup", Order: 1.31)]
+        [EnabledIf("average", true, HideIfDisabled = true)]
         public int numberOfAverages { get; set; }
 
         [Unit("dB", UseEngineeringPrefix: true)]
-        [Display("Trigger Level", Group: "Analyzer Setup", Description: "Sets absolute trigger level")]
+        [Display("Trigger Level", Group: "Analyzer Setup", Description: "Sets absolute trigger level", Order: 1.4)]
         public double absTriggerLevel { get; set; }
 
-        [Display("ISM Band", Group: "Analyzer Setup", Description:"Choose 2g or 5g depnding on wifi channel")]
+        [Display("ISM Band", Group: "Analyzer Setup", Description:"Choose 2g or 5g depnding on wifi channel", Order: 1.5)]
         public string ismBand { get; set; }
 
-        [Display("Channel", Group: "Chipset Setup")]
+        [Display("Channel", Group: "Chipset Setup", Order: 2.1)]
         public int channel { get; set; }
 
-        [Display("Rate Setting", Group: "Chipset Setup", Description:"Choose rate setting for wlan mode ")]
+        [Display("Rate Setting", Group: "Chipset Setup", Description:"Choose rate setting for wlan mode ", Order: 2.2)]
         public Rate_Setting rate { get; set; }
 
-        [Display("OFDM Rate(MCS Index)", Group: "Chipset Setup", Description:"Choose rate for a,b,or MCS index for n,ac wlan mode ")]
+        [Display("OFDM Rate(MCS Index)", Group: "Chipset Setup", Description:"Choose rate for a,b,or MCS index for n,ac wlan mode ", Order: 2.3)]
         public double ofdmRate { get; set; }
 
         [Unit("MHz", UseEngineeringPrefix: true)]
-        [Display("Bandwidth", Group: "Chipset Setup")]
+        [Display("Bandwidth", Group: "Chipset Setup", Order: 2.4)]
         public int bw { get; set; }
 
-        [Display("Antenna TX Chain", Group: "Chipset Setup")]
+        [Display("Antenna TX Chain", Group: "Chipset Setup", Order: 2.5)]
         public int antenna { get; set; }
 
-        [Display("Chipset WLAN mode", Group: "Chipset Setup", Description: "Set WLAN mode for DUT")]
+        [Display("Chipset WLAN mode", Group: "Chipset Setup", Description: "Set WLAN mode for DUT", Order: 2.6)]
          public string mode { get; set; }
 
-        [Display("Start Power", Group: "Chipset Setup")]
+        [Display("Start Power", Group: "Chipset Setup", Order: 2.7)]
         public double pwrdB { get; set; }
 
         // This property lets the instrument appear in the plugin Instrument field

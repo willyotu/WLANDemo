@@ -217,7 +217,7 @@ namespace Tap.Wlan.Demo
             ScpiCommand(syms);
         }
         //Sets the length of time for the burst search 
-        public void BurstSearchLength(string searchLength)
+        public void BurstSearchLength(double searchLength)
         {
             string search_len = "EVM:TIME:SLEN " + searchLength.ToString();
             ScpiCommand(search_len);
