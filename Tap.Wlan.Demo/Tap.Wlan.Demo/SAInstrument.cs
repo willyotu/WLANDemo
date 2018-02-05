@@ -32,8 +32,7 @@ namespace Tap.Wlan.Demo
         public SAInstrument()
         {
             // ToDo: Set default values for properties / settings.
-            
-            
+       
         }
 
         /// <summary>
@@ -241,12 +240,18 @@ namespace Tap.Wlan.Demo
         }
 
         //Sets averaging for SEM
-        public bool SEMAveragingState(bool Average, int Aver_Num)
+        public bool SEMAveragingState(bool average, int numberOfAverages)
         {
-            ScpiCommand("SEM:AVER {0}", Average);
-            string scpi = ("SEM:AVER:COUN " + Aver_Num.ToString());
-            ScpiCommand(scpi);
-            return Average;
+            if (average)
+            {
+                ScpiCommand("SEM:AVER ON");
+                ScpiCommand("SEM:AVER:COUN " + numberOfAverages.ToString());
+            }
+            else
+            {
+                ScpiCommand("SEM:AVER OFF");
+            }
+            return average;
         }
         public void SEMTriggerSource()
         {
@@ -347,10 +352,32 @@ namespace Tap.Wlan.Demo
         }
         #endregion
 
+        #region SEM Measurements
+        public SAMeasurements.SEMLimitTest MeasureSEMLimit(bool average, int NumberOfAverages)
+        {
+            SAMeasurements.SEMLimitTest SEMLimitResults = new SAMeasurements.SEMLimitTest();
+
+            SEMAveragingState(average, NumberOfAverages);
+
+            // Return SEM data into variable Results
+            string ResultsSEMPassFail;
+            ResultsSEMPassFail = FetchSEM();
+
+            // Split Results data into individual elements in an array
+            string[] iqCols = ResultsSEMPassFail.Split(',');
+
+            // Extract SEM resuts element from array into SEM_Results variable
+            Double.TryParse(iqCols[4], out SEMLimitResults.NegOFFSFREQA);
+            Double.TryParse(iqCols[5], out SEMLimitResults.PosOFFSFREQA);
+            Double.TryParse(iqCols[6], out SEMLimitResults.NegOFFSFREQB);
+            Double.TryParse(iqCols[7], out SEMLimitResults.PosOFFSFREQB);
+            return (SEMLimitResults);
+
+        }
         public SAMeasurements.SEM_Data MeasureSEMData()
         {
             AnalyzerModels config = new AnalyzerModels();
-           
+
             SAMeasurements.SEM_Data SEM_Data = new SAMeasurements.SEM_Data();
             // Return SEM data into variable Results
             string Results_SEM_DATA;
@@ -360,8 +387,23 @@ namespace Tap.Wlan.Demo
             string[] iqCols = Results_SEM_DATA.Split(',');
 
             // Extract SEM data element from array into SEM_Data variable
-            config.SEMMeasurementData();
+            //config.SEMMeasurementData();
+            // Extract SEM data element from array into SEM_Data variable
+            Double.TryParse(iqCols[1], out SEM_Data.TotalPowerRef);
+            Double.TryParse(iqCols[12], out SEM_Data.LowerAbsPowerA);
+            Double.TryParse(iqCols[70], out SEM_Data.LowerDeltaLimitA);
+            Double.TryParse(iqCols[14], out SEM_Data.LowerFreqA);
+            Double.TryParse(iqCols[17], out SEM_Data.UpperAbsPowerA);
+            Double.TryParse(iqCols[71], out SEM_Data.UpperDeltaLimitA);
+            Double.TryParse(iqCols[19], out SEM_Data.UpperFreqA);
+            Double.TryParse(iqCols[22], out SEM_Data.LowerAbsPowerB);
+            Double.TryParse(iqCols[72], out SEM_Data.LowerDeltaLimitB);
+            Double.TryParse(iqCols[24], out SEM_Data.LowerFreqB);
+            Double.TryParse(iqCols[27], out SEM_Data.UpperAbsPowerB);
+            Double.TryParse(iqCols[73], out SEM_Data.UpperDeltaLimitB);
+            Double.TryParse(iqCols[29], out SEM_Data.UpperFreqB);
             return (SEM_Data);
         }
+        #endregion
     }
 }

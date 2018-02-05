@@ -19,7 +19,7 @@ namespace Tap.Wlan.Demo
     {
         #region Settings
         // ToDo: Add property here for each parameter the end user should be able to change
-       // public Instrument xAPP;
+        // public Instrument xAPP;
         #endregion
         public SEMTestStep()
         {
@@ -36,12 +36,11 @@ namespace Tap.Wlan.Demo
         {
             // ToDo: Add test case code here
             SEMTestRun();
-            UpgradeVerdict(Verdict.Pass);
+            UpgradeVerdict(Keysight.Tap.Verdict.Pass);
         }
 
         private void SEMTestRun()//System.Diagnostics.TraceSource log,  double frequency
         {
-
             SAMeasurements sem = new SAMeasurements();
             BCM4366 chipset = GetParent<TransmitterStep>().bcm4366;
             SAInstrument xAPP = GetParent<TransmitterStep>().signalAnalyzer;
@@ -55,7 +54,7 @@ namespace Tap.Wlan.Demo
             chipset.bcm4366SetPowerLevel(chipsetPowerLevel);
 
             // Initialise SEM settings  
-            // Select frequency based on bandwidth
+            // Select frequency based on channel
             double frequency = chipset.choose_freq(bandwidth, channel);
             xAPP.centerFrequency = (frequency * 1000000).ToString();
             xAPP.MeasurementMode();
@@ -66,17 +65,91 @@ namespace Tap.Wlan.Demo
             xAPP.OptimizePowerRange();
 
             // Returns SEM Pass/Fail Test results
-            //  M9391A_XAPPS.SEM_Results SEM_Results = xAPP.MeasureSEM(average, Aver_Num);
+            SEMLimitTestResults(xAPP);
 
             // Returns SEM data results
+            SEMDataResults(xAPP);
+        }
+
+        private void SEMLimitTestResults(SAInstrument xAPP)
+        {
+            bool average = GetParent<TransmitterStep>().average;
+            int numberOfAverages = GetParent<TransmitterStep>().numberOfAverages;
+            SAMeasurements.SEMLimitTest semLimitTest = xAPP.MeasureSEMLimit(average, numberOfAverages);
+
+
+            var SEMLimit = new string[] {
+                "Negative Offset Frequency (A) ",
+                "Positive Offset Frequency (A) ",
+                "Negative Offset Frequency (B) ",
+                "Positive Offset Frequency (B) "
+                };
+            var SEMResult = new double[] {
+                semLimitTest.NegOFFSFREQA,
+                semLimitTest.PosOFFSFREQA,
+                semLimitTest.NegOFFSFREQB,
+                semLimitTest.PosOFFSFREQB
+                };
+            Results.PublishTable("SEM Limit Test", new List<string> { "SEM Offset Limit", "SEMResult" }, SEMLimit, SEMResult);
+            VerdictPassFail(semLimitTest);
+        }
+
+        private Verdict VerdictPassFail(SAMeasurements.SEMLimitTest semLimitTest)
+        {
+            Log.Info("  Running Spectrum Emission Mask Test ");
+            Log.Info("  Negative Offset Frequency (A)        : {0,4:0.00} ", semLimitTest.NegOFFSFREQA);
+            Log.Info("  Positive Offset Frequency (A)        : {0,5:0.00} ", semLimitTest.PosOFFSFREQA);
+            Log.Info("  Negative Offset Frequency (B)        : {0,6:0.00} ", semLimitTest.NegOFFSFREQB);
+            Log.Info("  Positive Offset Frequency (B)        : {0,7:0.00} ", semLimitTest.PosOFFSFREQB);
+            if (semLimitTest.NegOFFSFREQA == 0 & semLimitTest.PosOFFSFREQA == 0 & semLimitTest.NegOFFSFREQB == 0 & semLimitTest.PosOFFSFREQB == 0)
+            {
+                Verdict = Verdict.Pass;
+            }
+            else
+            {
+                Verdict = Verdict.Fail;
+            }
+            return Verdict;
+        }
+
+        private void SEMDataResults(SAInstrument xAPP)
+        {
             SAMeasurements.SEM_Data SEM_Data = xAPP.MeasureSEMData();
+            var SEMDataSettings = new string[] {
+                 "LowerAbsPowerA  ",
+                 "LowerDeltaLimitA",
+                 "LowerFreqA      ",
+                 "UpperAbsPowerA  ",
+                 "UpperDeltaLimitA",
+                 "UpperFreqA      ",
+                 "LowerAbsPowerB  ",
+                 "LowerDeltaLimitB",
+                 "LowerFreqB      ",
+                 "UpperAbsPowerB  ",
+                 "UpperDeltaLimitB",
+                 "UpperFreqB      "
+            };
 
-            // Log SEM results into TAP message window
-            //Log_SEM_TAP(log, SEM_Results, SEM_Data);
+            var SEMData = new double[] {
+                 Math.Round(SEM_Data.LowerAbsPowerA,2),
+                 Math.Round(SEM_Data.LowerDeltaLimitA,2),
+                 SEM_Data.LowerFreqA,
+                 Math.Round(SEM_Data.UpperAbsPowerA,2),
+                 Math.Round(SEM_Data.UpperDeltaLimitA,2),
+                 SEM_Data.UpperFreqA,
+                 Math.Round(SEM_Data.LowerAbsPowerB,2),
+                 Math.Round(SEM_Data.LowerDeltaLimitB,2),
+                 SEM_Data.LowerFreqB,
+                 Math.Round(SEM_Data.UpperAbsPowerB,2),
+                 Math.Round(SEM_Data.UpperDeltaLimitB,2),
+                 SEM_Data.UpperFreqB,
+            };
 
-
-            // Code to Increase Power if Channel Power measured does not exceed the SEM limit Or decrese power if measured power exceeds SEM limit
-            //Inc_Dec_PWR_SEM(log, SEM_Results, BCM4366, frequency);
+            var SEMDataUnit = new string[] {
+                 "dB","dB","Hz","dB","dB","Hz","dB","dB","Hz","dB","dB","Hz"
+            };
+            Results.PublishTable("SEM Data", new List<string> {"SEMDataSettings", "SEM Data", "SEM Data Unit"}, SEMDataSettings, SEMData, SEMDataUnit);
         }
     }
-}
+ }
+      

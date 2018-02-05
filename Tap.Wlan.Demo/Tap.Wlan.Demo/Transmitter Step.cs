@@ -42,7 +42,7 @@ namespace Tap.Wlan.Demo
         public bool average { get; set; }
 
         [Display("Average Number", Group: "Analyzer Setup")]
-        public int averageNumber { get; set; }
+        public int numberOfAverages { get; set; }
 
         [Unit("dB", UseEngineeringPrefix: true)]
         [Display("Trigger Level", Group: "Analyzer Setup", Description: "Sets absolute trigger level")]
@@ -86,7 +86,7 @@ namespace Tap.Wlan.Demo
             average = false;
 
             // Sets number of averages for measurements
-            averageNumber = 10;
+            numberOfAverages = 10;
 
             // Sets cable correction for measurements
             loss = -1.4;
