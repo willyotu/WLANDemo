@@ -104,7 +104,7 @@ namespace Tap.Wlan.Demo
 
         #region WL Commands 4366
         // WL commands for BCM 4366 Transmitter
-        public void init4366tx(string mode, int antenna, string ISM_Band, Rate_Setting rate, double OFDM_rate, double BW, double Channel, double pwrdB)
+        public void init4366tx(string mode, int antenna, string ISM_Band, Rate_Setting rate, double OFDM_rate, double BW, double channel, double pwrdB)
         {
             sendcmd("wl down");
             sendcmd("wl up");
@@ -153,15 +153,12 @@ namespace Tap.Wlan.Demo
             string ant = ("wl txchain" + antenna.ToString());
             sendcmd(ant);
             sendcmd("wl rxchain 1");
-            string OFDM = ("wl " + ISM_Band.ToString() + "_rate -" + rate.ToString() + " " + OFDM_rate.ToString() + " -b " + BW.ToString());
-            sendcmd(OFDM);
-            string chan = ("wl chanspec " + ISM_Band.ToString() + "" + Channel.ToString() + "/" + BW.ToString());
-            sendcmd(chan);
+            sendcmd("wl " + ISM_Band.ToString() + "_rate -" + rate.ToString() + " " + OFDM_rate.ToString() + " -b " + BW.ToString());
+            sendcmd("wl chanspec " + ISM_Band.ToString() + "" + channel.ToString() + "/" + BW.ToString());
             sendcmd("wl ssid \"\"");
             sendcmd("wl up");
             sendcmd("wl interference 0");
-            string pow = ("wl txpwr1 -o -q " + pwrdB.ToString());
-            sendcmd(pow);
+            sendcmd("wl txpwr1 -o -q " + pwrdB.ToString());
             sendcmd("wl pkteng_start 00:11:22:33:44:55:66 tx 25 1500 0");
             sendcmd("wl phy_forcecal 1");
 
@@ -169,7 +166,7 @@ namespace Tap.Wlan.Demo
 
 
         // WL commands for BCM 4366 Receiver
-       public void init4366rx(string mode, double BW, int antenna, string ISM_Band, Rate_Setting rate, double OFDM_rate, double pwrdB, int Channel)
+       public void init4366rx(string mode, double BW, int antenna, string ISM_Band, Rate_Setting rate, double OFDM_rate, double pwrdB, int channel)
         {
             sendcmd("wl down");
             sendcmd("wl cur_etheraddr 00:11:22:33:44:55:66");
@@ -218,16 +215,12 @@ namespace Tap.Wlan.Demo
             sendcmd("wl bi 65535");
             sendcmd("wl ampdu 1");
             sendcmd("wl txchain 1");
-            string ant = ("wl rxchain " + antenna.ToString());
-            sendcmd(ant);
-            string OFDM = ("wl " + ISM_Band.ToString() + "_rate -" + rate.ToString() + " " + OFDM_rate.ToString());
-            sendcmd(OFDM);
-            string chan = ("wl chanspec " + ISM_Band.ToString() + "" + Channel.ToString() + "/" + BW.ToString());
-            sendcmd(chan);
+            sendcmd("wl rxchain " + antenna.ToString());
+            sendcmd("wl " + ISM_Band.ToString() + "_rate -" + rate.ToString() + " " + OFDM_rate.ToString());
+            sendcmd("wl chanspec " + ISM_Band.ToString() + "" + channel.ToString() + "/" + BW.ToString());
             sendcmd("wl up");
             sendcmd("wl join aaa imode adhoc");
-            string pow = ("wl txpwr1 -o -q " + pwrdB.ToString());
-            sendcmd(pow);
+            sendcmd("wl txpwr1 -o -q " + pwrdB.ToString());
             sendcmd("wl disassoc");
             sendcmd("wl phy_forcecal 1");
             string respons = telnet.SendQuery("wl reset_cnts");
@@ -251,7 +244,7 @@ namespace Tap.Wlan.Demo
         #endregion
 
         // Uses Channel Variable from TAP GUI to and returns frequency variable to set frequency of Set Top Box and Analyser 
-        public double choose_freq(int bw, int channel)
+        public double choosefrequency(int bw, int channel)
         {
             // Uses Channel Variable from TAP GUI to and returns frequency variable to set frequency of Set Top Box and Analyser 
             double freq;

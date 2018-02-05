@@ -12,6 +12,7 @@ using System.ComponentModel;
 using Keysight.Tap;
 using System.Xml.Serialization;
 using System.Diagnostics;
+using static Tap.Wlan.Demo.CHPTestStep;
 
 //Note this template assumes that you have a SCPI based instrument, and accordingly
 //extends the ScpiInstrument base class.
@@ -141,9 +142,9 @@ namespace Tap.Wlan.Demo
 
         // Sets  RF Burst  Absolute Trigger Level
         [XmlIgnore]
-        public string RFBLevel
+        public string TriggerLevel
         {
-            set { ScpiCommand(":TRIG:RFB:LEV:ABS {0}", value); }
+            set { ScpiCommand(":TRIG:RBS:LEV:ABS {0}", value); }
             get { return ScpiQuery<string>(":TRIG:RFB:LEV:ABS?"); }
         }
 
@@ -155,9 +156,13 @@ namespace Tap.Wlan.Demo
         #endregion
 
         #region CHP settings
-        public void CHPTrigger()
+        public void CHPTrigger( TriggerSource triggerSource, double triggerLevel )
         {
-            ScpiCommand("TRIG:CHP:SOUR RFB");
+            ScpiCommand("TRIG:CHP:SOUR {0}", triggerSource);
+            if (triggerSource == TriggerSource.RFB)
+                ScpiCommand(":TRIG:{0}:LEV:ABS {1}", triggerSource, triggerLevel); 
+            else
+                ScpiCommand(":TRIG:{0}:LEV {1}", triggerSource, triggerLevel);
         }
         public void ChannelPowerConfigure()
         {
@@ -253,9 +258,10 @@ namespace Tap.Wlan.Demo
             }
             return average;
         }
-        public void SEMTriggerSource()
+        public void SEMTriggerSource(double triggerLevel)
         {
             ScpiCommand("TRIG:SEM:SOUR RFB");
+            ScpiCommand(":TRIG:RFB:LEV:ABS {0}", triggerLevel);
         }
         public string FetchSEM()
         {

@@ -28,26 +28,25 @@ namespace Tap.Wlan.Demo
             c,
             s
         };
+        
         #endregion
         // ToDo: Add property here for each parameter the end user should be able to change
         [Unit("dB", UseEngineeringPrefix: true)]
-        [Display("Cable Loss", Group: "Analyzer Setup", Description: " Enter cable loss value ", Order: 1.2)]
+        [Display("Cable Loss", Group: "Analyzer Setup", Description: " Enter cable loss value ", Order: 1.1)]
         public double loss { get; set; }
 
-        [Display("Average State", Group: "Analyzer Setup", Order: 1.3)]
+        [Display("Average State", Group: "Analyzer Setup", Order: 1.2)]
         public bool average { get; set; }
                
-        [Display("Average Number", Group: "Analyzer Setup", Order: 1.31)]
+        [Display("Average Number", Group: "Analyzer Setup", Order: 1.21)]
         [EnabledIf("average", true, HideIfDisabled = true)]
         public int numberOfAverages { get; set; }
 
         [Unit("dB", UseEngineeringPrefix: true)]
         [Display("Trigger Level", Group: "Analyzer Setup", Description: "Sets absolute trigger level", Order: 1.4)]
-        public double absTriggerLevel { get; set; }
+        public double triggerLevel { get; set; }
 
-        [Display("ISM Band", Group: "Analyzer Setup", Description:"Choose 2g or 5g depnding on wifi channel", Order: 1.5)]
-        public string ismBand { get; set; }
-
+        
         [Display("Channel", Group: "Chipset Setup", Order: 2.1)]
         public int channel { get; set; }
 
@@ -59,15 +58,18 @@ namespace Tap.Wlan.Demo
 
         [Unit("MHz", UseEngineeringPrefix: true)]
         [Display("Bandwidth", Group: "Chipset Setup", Order: 2.4)]
-        public int bw { get; set; }
+        public int bandwidth { get; set; }
 
         [Display("Antenna TX Chain", Group: "Chipset Setup", Order: 2.5)]
         public int antenna { get; set; }
 
         [Display("Chipset WLAN mode", Group: "Chipset Setup", Description: "Set WLAN mode for DUT", Order: 2.6)]
-         public string mode { get; set; }
+        public string mode { get; set; }
 
-        [Display("Start Power", Group: "Chipset Setup", Order: 2.7)]
+        [Display("ISM Band", Group: "Chipset Setup", Description: "Choose 2g or 5g depnding on wifi channel", Order: 2.7)]
+        public string ismBand { get; set; }
+
+        [Display("Start Power", Group: "Chipset Setup", Order: 2.8)]
         public double pwrdB { get; set; }
 
         // This property lets the instrument appear in the plugin Instrument field
@@ -101,7 +103,7 @@ namespace Tap.Wlan.Demo
             rate = Rate_Setting.h;
 
             // Sets Bandwidth Text Box to 20 which determines the bandwidth on Set Top Box
-            bw = 20;
+            bandwidth = 20;
 
             // Sets Antenna Tx Chain Text Box to 1 which determines antenna used (1 2 or 3) on Set Top Box
             antenna = 1;
@@ -110,7 +112,7 @@ namespace Tap.Wlan.Demo
             mode = "n";
 
             // Sets Trig Level Text Box to -25 which determines trigger level on analyser
-            absTriggerLevel = -26;
+            triggerLevel = -26;
 
             // Sets Start Power Text Box to 30 which determines the Start Power of the Set top Box
             pwrdB = 30;
@@ -118,11 +120,13 @@ namespace Tap.Wlan.Demo
         public override void PrePlanRun()
         {
             base.PrePlanRun();
+           
             // ToDo: Optionally add any setup code this step needs to run before the testplan starts
         }
         public override void Run()
         {
             // ToDo: Add test case code here
+            bcm4366.init4366tx(mode, antenna, ismBand,rate,ofdmRate,bandwidth,channel,pwrdB);
              RunChildSteps(); //If step has child steps.
          
            // UpgradeVerdict(Verdict.Pass);

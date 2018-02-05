@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestPlan type="Keysight.Tap.TestPlan" Locked="False" Version="8.1.318.0">
+  <Steps>
+    <TestStep type="Keysight.Tap.Plugins.BasicSteps.SweepLoop" Id="bb03c43b-c317-492e-b044-a34e4cb5865a" Version="8.1.318.0">
+      <ChildTestSteps>
+        <TestStep type="Tap.Wlan.Demo.TransmitterStep" Id="068cae2c-a8f1-4a51-aaea-d0520ad7ab07" Version="1.0.0.0">
+          <antenna>1</antenna>
+          <average>False</average>
+          <bandwidth>20</bandwidth>
+          <bcm4366 Source="Keysight.Tap.DutSettings">Broadcom 4366 WLAN device</bcm4366>
+          <channel>36</channel>
+          <ChildTestSteps>
+            <TestStep type="Tap.Wlan.Demo.CHPTestStep" Id="995fdb24-b478-43fd-b286-cfcb9b523a66" Version="1.0.0.0">
+              <ChildTestSteps />
+              <chpLowerLimit>5</chpLowerLimit>
+              <chpUpperLimit>15</chpUpperLimit>
+              <Enabled>True</Enabled>
+              <Name>Channel Power</Name>
+              <triggerSource>RFB</triggerSource>
+            </TestStep>
+            <TestStep type="Tap.Wlan.Demo.EVMTestStep" Id="79964a4b-a699-44b3-b4f2-745fa8087d0d" Version="1.0.0.0">
+              <ChildTestSteps />
+              <Enabled>True</Enabled>
+              <Name>Modulation Analysis</Name>
+              <rmsEvmAvgLimit>-27</rmsEvmAvgLimit>
+              <searchLength>0.1</searchLength>
+              <symbols>100</symbols>
+            </TestStep>
+            <TestStep type="Tap.Wlan.Demo.SEMTestStep" Id="7b82c0fe-fdea-4d6e-be34-904be19fdc9d" Version="1.0.0.0">
+              <ChildTestSteps />
+              <Enabled>True</Enabled>
+              <Name>Spectrual Emission Mask</Name>
+            </TestStep>
+          </ChildTestSteps>
+          <Enabled>True</Enabled>
+          <ismBand>5g</ismBand>
+          <loss>-1.4</loss>
+          <mode>n</mode>
+          <Name>Transmitter Setup</Name>
+          <numberOfAverages>10</numberOfAverages>
+          <ofdmRate>7</ofdmRate>
+          <pwrdB>60</pwrdB>
+          <rate>h</rate>
+          <signalAnalyzer Source="Keysight.Tap.InstrumentSettings">xSA</signalAnalyzer>
+          <triggerLevel>-20</triggerLevel>
+        </TestStep>
+      </ChildTestSteps>
+      <CrossPlan>Within_Run</CrossPlan>
+      <Enabled>True</Enabled>
+      <Name>Sweep Loop</Name>
+      <SweepParameters>
+        <SweepParam>
+          <IsEnabled>
+            <Boolean>True</Boolean>
+            <Boolean>True</Boolean>
+            <Boolean>True</Boolean>
+          </IsEnabled>
+          <Name>Chipset Setup \ Channel</Name>
+          <PropertyNames>
+            <String>Chipset Setup \ Channel</String>
+          </PropertyNames>
+          <Values type="System.Int32[]">36 : 4 : 44</Values>
+        </SweepParam>
+        <SweepParam>
+          <IsEnabled>
+            <Boolean>True</Boolean>
+            <Boolean>True</Boolean>
+            <Boolean>True</Boolean>
+          </IsEnabled>
+          <Name>Chipset Setup \ Start Power</Name>
+          <PropertyNames>
+            <String>Chipset Setup \ Start Power</String>
+          </PropertyNames>
+          <Values type="System.Double[]">30, 30, 30</Values>
+        </SweepParam>
+      </SweepParameters>
+    </TestStep>
+  </Steps>
+</TestPlan>

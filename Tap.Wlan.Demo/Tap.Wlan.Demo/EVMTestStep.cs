@@ -59,7 +59,7 @@ namespace Tap.Wlan.Demo
 
             // Initialise EVM settings
             xAPP.EVMConfigure();
-            //xAPP.EVMTrigger();
+            xAPP.EVMTrigger();
             xAPP.BurstSearchLength(searchLength);
             xAPP.NumberOfSymbols(symbols);
             xAPP.EVMTracking();

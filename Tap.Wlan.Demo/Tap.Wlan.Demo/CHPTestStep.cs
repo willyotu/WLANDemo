@@ -25,6 +25,14 @@ namespace Tap.Wlan.Demo
         [Unit("dBm", UseEngineeringPrefix: true)]
         [Display("Channel Power Lower Limit", Group:"Limits")]
         public double chpLowerLimit { get; set; }
+
+        [Display("Trigger Source", Group: "Analyzer")]
+        public TriggerSource triggerSource { get; set; }
+        public enum TriggerSource
+        {
+            RFB,
+            VID
+        };
         // ToDo: Add property here for each parameter the end user should be able to change
         #endregion
         public CHPTestStep()
@@ -32,6 +40,7 @@ namespace Tap.Wlan.Demo
             // ToDo: Set default values for properties / settings.
             chpLowerLimit = 5;
             chpUpperLimit = 15;
+            triggerSource = TriggerSource.VID;
         }
 
         public override void Run()
@@ -45,22 +54,24 @@ namespace Tap.Wlan.Demo
             SAInstrument xAPP = GetParent<TransmitterStep>().signalAnalyzer;
             bool average = GetParent<TransmitterStep>().average;
             int numberOfAverages = GetParent<TransmitterStep>().numberOfAverages;
-            double rfbLevel = GetParent<TransmitterStep>().absTriggerLevel;
-            int bandwidth = GetParent<TransmitterStep>().bw;
+            double triggerLevel = GetParent<TransmitterStep>().triggerLevel;
+            int bandwidth = GetParent<TransmitterStep>().bandwidth;
             int channel = GetParent<TransmitterStep>().channel;
             string mode = GetParent<TransmitterStep>().mode;
-
+                        
+            // Select frequency based on bandwidth
+            double frequency = chipset.choosefrequency(bandwidth, channel);
+            xAPP.centerFrequency = (frequency * 1000000).ToString();
             //Set set-top power level to pwrdB value
             double chipsetPowerLevel = GetParent<TransmitterStep>().pwrdB;
             chipset.bcm4366SetPowerLevel(chipsetPowerLevel);
-          
+
             // Initialise CHP settings  
+            xAPP.MeasurementMode();
             xAPP.WlanMode(bandwidth, mode.ToString());
             xAPP.ChannelPowerConfigure();
-            xAPP.RFBLevel = rfbLevel.ToString();
-           // xAPP.CHPTrigger();
+            xAPP.CHPTrigger(triggerSource,triggerLevel);
             xAPP.OptimizePowerRange();
-
             CHPResults(xAPP);
         }
 

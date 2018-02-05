@@ -44,24 +44,23 @@ namespace Tap.Wlan.Demo
             SAMeasurements sem = new SAMeasurements();
             BCM4366 chipset = GetParent<TransmitterStep>().bcm4366;
             SAInstrument xAPP = GetParent<TransmitterStep>().signalAnalyzer;
-            double rfbLevel = GetParent<TransmitterStep>().absTriggerLevel;
-            int bandwidth = GetParent<TransmitterStep>().bw;
+            double rfbLevel = GetParent<TransmitterStep>().triggerLevel;
+            int bandwidth = GetParent<TransmitterStep>().bandwidth;
             int channel = GetParent<TransmitterStep>().channel;
             string mode = GetParent<TransmitterStep>().mode;
-
+            
             //Set set-top power level to pwrdB value
             double chipsetPowerLevel = GetParent<TransmitterStep>().pwrdB;
             chipset.bcm4366SetPowerLevel(chipsetPowerLevel);
 
             // Initialise SEM settings  
             // Select frequency based on channel
-            double frequency = chipset.choose_freq(bandwidth, channel);
+            double frequency = chipset.choosefrequency(bandwidth, channel);
             xAPP.centerFrequency = (frequency * 1000000).ToString();
             xAPP.MeasurementMode();
             xAPP.WlanMode(bandwidth, mode.ToString());
             xAPP.SEMConfigure();
-            xAPP.RFBLevel = rfbLevel.ToString();
-            //xAPP.SEMTriggerSource();
+            xAPP.SEMTriggerSource(rfbLevel);
             xAPP.OptimizePowerRange();
 
             // Returns SEM Pass/Fail Test results
