@@ -114,7 +114,7 @@ namespace Tap.Wlan.Demo
 
         private void SEMDataResults(SAInstrument xAPP)
         {
-            SAMeasurements.SEM_Data SEM_Data = xAPP.MeasureSEMData();
+            SAMeasurements.SEMData SEM_Data = xAPP.MeasureSEMData();
             var SEMDataSettings = new string[] {
                  "LowerAbsPowerA  ",
                  "LowerDeltaLimitA",

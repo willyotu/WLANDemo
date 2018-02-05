@@ -13,7 +13,13 @@ namespace Tap.Wlan.Demo
         {
 
         }
-        public class SEM_Data
+
+        public class CHPResult
+        {
+             public double PowerResult;
+        }
+
+        public class SEMData
         {
             public double TotalPowerRef; //1
             public double LowerAbsPowerA;//12

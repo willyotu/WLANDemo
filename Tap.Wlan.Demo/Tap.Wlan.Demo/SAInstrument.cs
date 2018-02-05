@@ -155,23 +155,23 @@ namespace Tap.Wlan.Demo
         #endregion
 
         #region CHP settings
-        public void Set_CHP_Trig()
+        public void CHPTrigger()
         {
             ScpiCommand("TRIG:CHP:SOUR RFB");
         }
-        public void Set_ChannelPower_Conf()
+        public void ChannelPowerConfigure()
         {
             ScpiCommand("CONF:CHPower");
         }
         //Sets averaging for CHP
-        public bool Set_CHP_AvgState(bool Average, int Aver_Num)
+        public bool CHPAveragingState(bool Average, int Aver_Num)
         {
             ScpiCommand("CHP:AVER {0}", Average);
             string scpi = ("CHP:AVER:COUN " + Aver_Num.ToString());
             ScpiCommand(scpi);
             return Average;
         }
-        public string Fetch_ChannelPower()
+        public string FetchChannelPower()
         {
             return (ScpiQuery("FETCH:CHPower?"));
         }
@@ -352,6 +352,27 @@ namespace Tap.Wlan.Demo
         }
         #endregion
 
+        #region CHP Measurement
+        public SAMeasurements.CHPResult MeasureChannelPower(bool average, int numberOfAverages)
+        {
+            SAMeasurements.CHPResult powerResult = new SAMeasurements.CHPResult();
+
+           CHPAveragingState(average, numberOfAverages);
+
+            // Return channel power results data into variable resultsCHP
+            string resultsCHP;
+            resultsCHP = FetchChannelPower();
+
+            // Split Results_CHP data into individual elements in an array
+            string[] iqCols = resultsCHP.Split(',');
+
+            // Extract CHP only element from array into power_result variable
+            Double.TryParse(iqCols[0], out  powerResult.PowerResult);
+            return (powerResult);
+
+        }
+        #endregion
+
         #region SEM Measurements
         public SAMeasurements.SEMLimitTest MeasureSEMLimit(bool average, int NumberOfAverages)
         {
@@ -374,11 +395,11 @@ namespace Tap.Wlan.Demo
             return (SEMLimitResults);
 
         }
-        public SAMeasurements.SEM_Data MeasureSEMData()
+        public SAMeasurements.SEMData MeasureSEMData()
         {
             AnalyzerModels config = new AnalyzerModels();
 
-            SAMeasurements.SEM_Data SEM_Data = new SAMeasurements.SEM_Data();
+            SAMeasurements.SEMData SEM_Data = new SAMeasurements.SEMData();
             // Return SEM data into variable Results
             string Results_SEM_DATA;
             Results_SEM_DATA = FetchSEMData();
