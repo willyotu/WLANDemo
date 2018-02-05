@@ -46,7 +46,6 @@ namespace Tap.Wlan.Demo
         [Display("Trigger Level", Group: "Analyzer Setup", Description: "Sets absolute trigger level", Order: 1.4)]
         public double triggerLevel { get; set; }
 
-        
         [Display("Channel", Group: "Chipset Setup", Order: 2.1)]
         public int channel { get; set; }
 

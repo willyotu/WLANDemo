@@ -13,6 +13,7 @@ using System.ComponentModel;
 using Keysight.Tap;
 using System.Text.RegularExpressions;
 using static Tap.Wlan.Demo.TransmitterStep;
+using static Tap.Wlan.Demo.ReceiverStep;
 
 namespace Tap.Wlan.Demo
 {
@@ -166,7 +167,7 @@ namespace Tap.Wlan.Demo
 
 
         // WL commands for BCM 4366 Receiver
-       public void init4366rx(string mode, double BW, int antenna, string ISM_Band, Rate_Setting rate, double OFDM_rate, double pwrdB, int channel)
+       public void init4366rx(string mode, double BW, int antenna, string ISM_Band, RateSettingRX rate, double OFDM_rate, double pwrdB, int channel)
         {
             sendcmd("wl down");
             sendcmd("wl cur_etheraddr 00:11:22:33:44:55:66");

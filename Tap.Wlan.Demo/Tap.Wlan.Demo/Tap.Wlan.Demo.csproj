@@ -51,15 +51,18 @@
   <ItemGroup>
     <Compile Include="AnalyzerModels.cs" />
     <Compile Include="BCM4366.cs" />
+    <Compile Include="MinInputSensitivityTestStep.cs" />
     <Compile Include="SAInstrument.cs" />
     <Compile Include="EVMTestStep.cs" />
     <Compile Include="MxaInstrument.cs" />
     <Compile Include="SAMeasurements.cs" />
     <Compile Include="CHPTestStep.cs" />
     <Compile Include="SEMTestStep.cs" />
+    <Compile Include="SGInstrument.cs" />
     <Compile Include="Step.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Telnet.cs" />
+    <Compile Include="Receiver Step.cs" />
     <Compile Include="Transmitter Step.cs" />
     <Compile Include="WlanChannels.cs" />
     <None Include="App.config">
