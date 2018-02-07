@@ -63,63 +63,105 @@ namespace Tap.Wlan.Demo
             ScpiCommand("*WAI");
             ScpiCommand("*RST");
             ScpiQuery("*IDN?");
+            System.Threading.Thread.Sleep(1000);
             ScpiCommand("*WAI");
-
         }
-        public void Play_Waveform(double frequency, double Amptd, string ArbName, double rms, int repeat)
+        public void PlayWaveform(double frequency, double Amptd, string ArbName, double rms, int repeat)
         {
+            string[] modelID = IdnString.Split(',');
+            if (modelID.Contains("M9381"))
+            {
+                // Marker Trig / Pulse Blanking"	
+                ScpiCommand(":RADio:ARB:MDEStination:PULSe M2");
+                ScpiCommand(":RADio:ARB:MPOL:MARK2 POS");
+                // Set Arb/Seq Trigger
+                ScpiCommand("SOURCe:RADio:ARB:TRIGger:SOURce:EXTernal TRIG1");
+            }
+            else
+            {
+                ScpiCommand(":RAD:ARB:MDES:PULS M3");
+                ScpiCommand(":RAD:ARB:MDES:ALCH M4");
 
-            // Marker Trig / Pulse Blanking"	
-            ScpiCommand(":RADio:ARB:MDEStination:PULSe M2");
-            ScpiCommand(":RADio:ARB:MPOL:MARK2 POS");
+            }  
+                //ScpiCommand("SOURce:RADio:ARB:STAT 1");
+                //ScpiCommand(":OUTP:MOD 1");
+                //ScpiCommand(":POWer:ALC 0");
+                //ScpiCommand(":POWer:ALC:SEARch 1");
+                //ScpiCommand(":OUTP 1");
+              
+           
 
-
-            // Set Arb/Seq Trigger
-            ScpiCommand("SOURCe:RADio:ARB:TRIGger:SOURce:EXTernal TRIG1");
+           
             ScpiCommand("SOURce:RADio:ARB:TRIGger:TYPE SINGle");
-            ScpiCommand("SOURce:RADio:ARB:TRIGger:SOURce:EXTernal:SLOPE POSitive");
 
+            if (modelID.Contains("M9381"))
+            {
+                ScpiCommand("SOURce:RADio:ARB:TRIGger:SOURce:EXTernal:SLOPE POSitive");
+            }
+
+            if (!modelID.Contains("M9381"))
+            {
+                ScpiCommand(":SOUR:RAD:ARB:RETR IMM");
+                ScpiCommand(":SOUR:RAD:ARB:TRIG BUS");
+            }
             ScpiCommand(":OUTPut:STATe OFF");
             ScpiCommand(":RAD:ARB OFF");
             ScpiCommand(":SOURce:POWer:LEVel:IMMediate:AMPLitude -100");
 
-            Set_frequency = (frequency * 1000000).ToString();
+            CenterFrequency = (frequency * 1000000).ToString();
 
-            ScpiCommand(":MEMory:DELete:ALL");
-            Load_Waveform(ArbName);
+            if (modelID.Contains("M9381"))
+            {
+                ScpiCommand(":MEMory:DELete:ALL");
+                LoadWaveform(ArbName);
+            }
             ScpiCommand(":SOURce:POWer:LEVel:IMMediate:AMPLitude " + Amptd.ToString() + "dBm");
             ScpiCommand("*WAI");
 
-            // Set RMS power for Sequence - must be before command to create sequence!!!
-            ScpiCommand(":RAD:DMOD:ARB:RMS " + rms.ToString());
-
+            if (modelID.Contains("M9381"))
+            {
+                // Set RMS power for Sequence - must be before command to create sequence!!!
+                ScpiCommand(":RAD:DMOD:ARB:RMS " + rms.ToString());
+            
             // Play Sequence userdefined number of times. Default is just once.
-            string scpi = (":RADio:ARB:SEQuence \"SEQ:MySequence\",\"arb\"," + repeat.ToString() + ",M2");
-            ScpiCommand(scpi);
-
+            ScpiCommand(":RADio:ARB:SEQuence \"SEQ:MySequence\",\"arb\"," + repeat.ToString() + ",M2");
+            }
+            if (!modelID.Contains("M9381"))
+            {
+                string arbName = ArbName.Remove(0,3).Trim();
+                ScpiCommand(":RADio:ARB:SEQuence \"SEQ:MySequence\","+arbName+"," + repeat.ToString() + ",M2");
+            }
             ScpiCommand(":OUTPut:MODulation:STATe ON");
 
-            // Setup Trigger output for M9300A
-            ScpiCommand(":MODule:REFerence:OUTPut:TRIGger:STATe ON");
-            ScpiCommand(":MODule:REFerence:OUTPut:TRIGger:DESTination TRIG2");
-            ScpiCommand(":MODule:REFerence:OUTPut:TRIGger:POLarity POSitive");
-            ScpiQuery("*OPC?");
+            if (modelID.Contains("M9381"))
+            {
+                // Setup Trigger output for M9300A
+                ScpiCommand(":MODule:REFerence:OUTPut:TRIGger:STATe ON");
+                ScpiCommand(":MODule:REFerence:OUTPut:TRIGger:DESTination TRIG2");
+                ScpiCommand(":MODule:REFerence:OUTPut:TRIGger:POLarity POSitive");
+                ScpiQuery("*OPC?");
 
-            // Play Sequence
-            ScpiCommand(":RAD:ARB:WAV \"SEQ:MySequence\"");
-
+                // Play Sequence
+                ScpiCommand(":RAD:ARB:WAV \"SEQ:MySequence\"");
+            }
             // Must have ARB turned on before RF Output to enable RF 
             ScpiCommand(":OUTPut:STATe ON");
             ScpiCommand(":RAD:ARB ON");
 
             // Do Power Search sinc ALC is off
             ScpiCommand(":SOURce:POWer:ALC:SEARch:IMMediate");
+            if (!modelID.Contains("M9381"))
+            {
+                ScpiCommand("*TRG");
+            }
 
-            // Generate Trigger on Trig2 output of M9300A
-            ScpiCommand(":MODule:REFerence:OUTPut:TRIGger:PULSE");
-            ScpiQuery("*OPC?");
-            System.Threading.Thread.Sleep(3001);
-
+            if (modelID.Contains("M9381"))
+            {
+                // Generate Trigger on Trig2 output of M9300A
+                ScpiCommand(":MODule:REFerence:OUTPut:TRIGger:PULSE");
+                ScpiQuery("*OPC?");
+                System.Threading.Thread.Sleep(3001);
+            }
             // Turn VSG off
             ScpiCommand(":OUTPut:MODulation:STATe OFF");
             ScpiCommand(":OUTPut:STATe OFF");
@@ -128,27 +170,39 @@ namespace Tap.Wlan.Demo
 
 
         }
-        [XmlIgnore]
-        public string Set_frequency
+
+
+        private void PlayBenchWaveform()
         {
-            set { ScpiCommand(":SOURce:Frequency:CENTer {0}", value); }
+            // In order to use the following driver class, you need to reference this assembly : [C:\ProgramData\Keysight\Command Expert\ScpiNetDrivers\AgN51xx_B_01_40.dll]
+            //AgN51xx N5182B = new AgN51xx("TCPIP0::A-N5182B-052664.wnn.is.keysight.com::5025::SOCKET");
+                  
+            //ScpiCommand("SOUR:RAD:ARB:SEQ \"SEQ:SEQ-1\", \"802.11n_Pace_100frames_MCS0.wfm\",2,M1M2M3M4");
+            
+           
+        }
+
+        [XmlIgnore]
+        public string CenterFrequency
+        {
+            set { ScpiCommand("*CLS;:SOURce:Frequency:CENTer {0}", value); }
             get
             {
                 return ScpiQuery<string>(":FREQ:CENT?");
 
             }
         }
-        public void Set_Amplitude(double Amptd)
+        public void AmplitudeLevel(double Amptd)
         {
             string ampl = ":SOURce:POWer:LEVel:IMMediate:AMPLitude " + Amptd.ToString() + "dBm";
             ScpiCommand(ampl);
         }
-        public void Load_Waveform(string ArbName)
+        public void LoadWaveform(string ArbName)
         {
             string FileName = string.Format(":MEM:COPY \"{0}\" ,\"{1}\"", ArbName.Trim(), "arb");
             ScpiCommand(FileName);
         }
-        public void M9381Server_Startup()
+        public void M9381ServerStartup()
         {
             Process[] pname = Process.GetProcessesByName("AgM938xScpi");
             if (pname.Length == 0)

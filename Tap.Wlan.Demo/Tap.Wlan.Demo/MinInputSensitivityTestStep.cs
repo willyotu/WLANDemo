@@ -24,7 +24,7 @@ namespace Tap.Wlan.Demo
         public Double amplitudeULimit { get; set; }
 
         [Unit("dBm", UseEngineeringPrefix: true)]
-        [Display("Amplitude Lower Limit", Group:"Limits")]
+        [Display("Amplitude Lower Limit", Group: "Limits")]
         public Double amplitudeLLimit { get; set; }
 
         #endregion
@@ -44,12 +44,9 @@ namespace Tap.Wlan.Demo
 
         private void MinInputSensitivityTestRun()
         {
-            BCM4366 chipset = GetParent<TransmitterStep>().bcm4366;
+            BCM4366 chipset = GetParent<ReceiverStep>().bcm4366;
             SGInstrument signalGenerator = GetParent<ReceiverStep>().signalGenerator;
-            bool average = GetParent<TransmitterStep>().average;
-            int numberOfAverages = GetParent<TransmitterStep>().numberOfAverages;
-            double triggerLevel = GetParent<TransmitterStep>().triggerLevel;
-            int bandwidth = GetParent<TransmitterStep>().bandwidth;
+            int bandwidth = GetParent<ReceiverStep>().bandwidth;
             double amplitude = GetParent<ReceiverStep>().amplitude;
             double rms = GetParent<ReceiverStep>().rms;
             int repeat = GetParent<ReceiverStep>().repeat;
@@ -60,64 +57,30 @@ namespace Tap.Wlan.Demo
             // Uses Channel Variable from TAP GUI to and returns frequency variable to set frequency of Set Top Box and Analyser 
             int channel = GetParent<ReceiverStep>().channel;
             double frequency = WLanChannels.ChannelToFrequencyMHz(channel);
-            signalGenerator.Set_Amplitude(amplitude);
-
             Log.Info("  Running Minimum Input Sensitivity Test ");
+            signalGenerator.AmplitudeLevel(amplitude);
             Log.Info("  Initial Power level : {0,0:0.00} dBm", amplitude);
-            TestPlan.Sleep(200);
-            Tuple<int, int> before = chipset.RxPackagesReceived();  //Get number of received packages (as a reference)
-            TestPlan.Sleep(500);
-            signalGenerator.Play_Waveform(frequency,amplitude, arbName, rms, repeat);
-            TestPlan.Sleep(1000);
-            Tuple<int, int> after = chipset.RxPackagesReceived(); //Get number of received packages after waveform is completed
-
-            double ack = after.Item1 - before.Item1;
-
-            double perError = (1 - (double)ack / (int)frames) * 100;
+            Tuple<int, int> before, after;
+            double ack, perError;
+            PERTest(chipset, signalGenerator, amplitude, rms, repeat, frames, arbName, frequency, out before, out after, out ack, out perError);
 
 
             // Check if PER is within limit. If yes, decrease the Signal Generator power. If no, increase the Signal Generator power. 
-            if (perError <perLimit)
+            if (perError < perLimit)
             {
                 double pwr = amplitude;
                 while (perError < perLimit & pwr > amplitudeLLimit)
                 {
                     pwr = pwr - 1;
-                    //PERTest(ref before, ref after, ref ack, ref perError, pwr, frequency);
+                    PERTest(chipset, signalGenerator, amplitude, rms, repeat, frames, arbName, frequency, out before, out after, out ack, out perError);
 
                     if (perError >= perLimit)
                     {
                         Log.Info("  Error Rate          : {0,6:0.00} % ", perError);
                         Log.Info("Minimum Input Sensitivty is: : {0,0:0.00} dBm", pwr);
                         Log.Info("  No. of Packets Received         : {0,0:0.00} ", ack);
-                        Verdict = Verdict.Pass;
-                       // StoreResults_TAP(perError, pwr, ack);
-                        break;
-                    }
-                    else
-                    {
-                       Log.Info("  Error Rate          : {0,6:0.00} % ", perError);
-                       Log.Info("  Power Level         : {0,0:0.00} dBm", pwr);
-                       Log.Info("  No. of Packets Received         : {0,0:0.00} ", ack);
-                    }
-                  //  StoreResults_TAP(perError, pwr, ack);
-                }
-            }
-            else
-            {
-                double pwr = amplitude;
-                while (perError >perLimit & pwr < amplitudeULimit)
-                {
-                    pwr = pwr + 1;
-                    //PERTest(ref before, ref after, ref ack, ref perError, pwr, frequency);
-
-                    if (perError <= perLimit)
-                    {
-                        Log.Info("  Error Rate          : {0,6:0.00} % ", perError);
-                        Log.Info("Minimum Input Sensitivty is: : {0,0:0.00} dBm", pwr);
-                        Log.Info("  No. of Packets Received         : {0,0:0.00} ", ack);
-                        Verdict = Verdict.Pass;
-                       // StoreResults_TAP(perError, pwr, ack);
+                        UpgradeVerdict(Verdict.Pass);
+                        MinInputSensitivityResults(perError, pwr, ack);
                         break;
                     }
                     else
@@ -126,72 +89,59 @@ namespace Tap.Wlan.Demo
                         Log.Info("  Power Level         : {0,0:0.00} dBm", pwr);
                         Log.Info("  No. of Packets Received         : {0,0:0.00} ", ack);
                     }
-                    //StoreResults_TAP(perError, pwr, ack);
+                    MinInputSensitivityResults(perError, pwr, ack);
+                    
+                }
+            }
+            else
+            {
+                double pwr = amplitude;
+                while (perError > perLimit & pwr < amplitudeULimit)
+                {
+                    pwr = pwr + 1;
+                    PERTest(chipset, signalGenerator, amplitude, rms, repeat, frames, arbName, frequency, out before, out after, out ack, out perError);
+
+                    if (perError <= perLimit)
+                    {
+                        Log.Info("  Error Rate          : {0,6:0.00} % ", perError);
+                        Log.Info("Minimum Input Sensitivty is: : {0,0:0.00} dBm", pwr);
+                        Log.Info("  No. of Packets Received         : {0,0:0.00} ", ack);
+                        UpgradeVerdict(Verdict.Pass);
+                        MinInputSensitivityResults(perError, pwr, ack);
+                        break;
+                    }
+                    else
+                    {
+                        Log.Info("  Error Rate          : {0,6:0.00} % ", perError);
+                        Log.Info("  Power Level         : {0,0:0.00} dBm", pwr);
+                        Log.Info("  No. of Packets Received         : {0,0:0.00} ", ack);
+                    }
+                    MinInputSensitivityResults(perError, pwr, ack);
                 }
             }
 
-            // Initialise CHP settings  
-
-            //MinInputSensitivityResults(xAPP);
         }
 
-        private void MinInputSensitivityResults(SAInstrument xAPP)
+        private static void PERTest(BCM4366 chipset, SGInstrument signalGenerator, double amplitude, double rms, int repeat, int frames, string arbName, double frequency, out Tuple<int, int> before, out Tuple<int, int> after, out double ack, out double perError)
         {
-            // Return CHP in dBm
-            bool average = GetParent<TransmitterStep>().average;
-            int numberOfAverages = GetParent<TransmitterStep>().numberOfAverages;
-            SAMeasurements.CHPResult chp = xAPP.MeasureChannelPower(average, numberOfAverages);
-            var chpResult = new double[] { chp.PowerResult };
-            
-            var chpUnit = new string[] {
-                 "dBm"
-            };
-            Results.PublishTable("CHP Result", new List<string> { "CHP", "CHP Unit" }, chpResult, chpUnit);
+            signalGenerator.AmplitudeLevel(amplitude);
+            TestPlan.Sleep(200);
+            before = chipset.RxPackagesReceived();
+            TestPlan.Sleep(500);
+            signalGenerator.PlayWaveform(frequency, amplitude, arbName, rms, repeat);
+            TestPlan.Sleep(1000);
+            after = chipset.RxPackagesReceived();
+            ack = after.Item1 - before.Item1;
+            perError = (1 - (double)ack / (int)frames) * 100;
         }
 
-
-        //private void PER_Test(ref Tuple<int, int> before, ref Tuple<int, int> after, ref double ack, ref double perError, double pwr, double frequency)
-        //{
-        //    Generator.Set_Amplitude(pwr);
-        //    TestPlan.Sleep(200);
-        //    before = BCM4366.RxPackagesReceived();  //Get number of received packages (as a reference)
-        //    TestPlan.Sleep(500);
-        //    Generator.Play_Waveform(frequency, RxParent.Amptd, RxParent.ArbName, RxParent.rms, RxParent.repeat);
-        //    TestPlan.Sleep(1000);
-        //    after = BCM4366.RxPackagesReceived(); //Get number of received packages after waveform is completed
-
-        //    ack = after.Item1 - before.Item1;
-
-        //    perError = (1 - (double)ack / (int)RxParent.frames) * 100;
-        //}
-
-        //private void StoreResults_TAP(double perError, double pwr, double ack)
-        //{
-        //    TestStepResultType type = new TestStepResultType();
-        //    type.DimensionTitles.Add("PER");
-        //    type.DimensionTitles.Add("Minimum Input Sensitivity Level");
-        //    type.DimensionTitles.Add("No. of Packets Sent");
-        //    type.DimensionTitles.Add("No. of Packets Received");
-        //    type.DimensionTitles.Add("Pass/Fail");
-        //    type.Name = "PER Results";
-        //    TestStepResult res = new TestStepResult();
-        //    res.Type = type;
-        //    res.Doubles.Add(perError);
-        //    res.Doubles.Add(pwr);
-        //    res.Doubles.Add(RxParent.frames);
-        //    res.Doubles.Add(ack);
-        //    if (Verdict == Verdict.Pass)
-        //    {
-        //        res.Strings.Add("Pass");
-        //    }
-        //    else
-        //    {
-        //        res.Strings.Add("Fail");
-        //    }
-
-
-        //    this.Results.StoreResult(res);
-        //}
+        private void MinInputSensitivityResults(double perError, double pwr, double ack)
+        {
+            var per = new double[] { perError };
+            var powerLevel = new double[] { pwr };
+            var ackPackets = new double[] { ack };
+            Results.PublishTable("Minimum Sensitivity Result", new List<string> { "Error Rate", "Power Level", "No. of Packets Received" }, per, powerLevel, ackPackets);
+        }
 
     }
 }

@@ -58,7 +58,7 @@ namespace Tap.Wlan.Demo
 
         [Unit("MHz", UseEngineeringPrefix: true)]
         [Display("Bandwidth", Group: "Chipset", Order: 1.9)]
-        public Double bandwidth { get; set; }
+        public int bandwidth { get; set; }
 
         [Unit("dBm", UseEngineeringPrefix: true)]
         [Display("Amplitude", Group: "Chipset", Order: 1.10)]
@@ -114,9 +114,9 @@ namespace Tap.Wlan.Demo
         {
             // ToDo: Add test case code here
             bcm4366.init4366rx(mode, bandwidth, antenna, ismBand, rate, ofdmRate, pwrdB, channel);
-            signalGenerator.InitializeGenerator();
+           // signalGenerator.InitializeGenerator();
             RunChildSteps(); //If step has child steps.
-            // UpgradeVerdict(Verdict.Pass);
+            UpgradeVerdict(Verdict.Pass);
         }
         public override void PostPlanRun()
         {
