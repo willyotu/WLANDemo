@@ -50,7 +50,8 @@ namespace Tap.Wlan.Demo
 
         private void CHPTestRun()
         {
-            BCM4366 chipset = GetParent<TransmitterStep>().bcm4366;
+            BCM4360 chipset60 = GetParent<TransmitterStep>().bcm4360;
+            BCM4366 chipset66 = GetParent<TransmitterStep>().bcm4366;
             SAInstrument xAPP = GetParent<TransmitterStep>().signalAnalyzer;
             bool average = GetParent<TransmitterStep>().average;
             int numberOfAverages = GetParent<TransmitterStep>().numberOfAverages;
@@ -58,13 +59,29 @@ namespace Tap.Wlan.Demo
             int bandwidth = GetParent<TransmitterStep>().bandwidth;
             int channel = GetParent<TransmitterStep>().channel;
             string mode = GetParent<TransmitterStep>().mode;
-                        
+
             // Select frequency based on bandwidth
-            double frequency = chipset.choosefrequency(bandwidth, channel);
-            xAPP.centerFrequency = (frequency * 1000000).ToString();
+            if (chipset66.IsConnected)
+            {
+                double frequency = chipset66.choosefrequency(bandwidth, channel);
+                xAPP.centerFrequency = (frequency * 1000000).ToString();
+            }
+            else
+            {
+                double frequency = chipset60.ChooseFrequency(bandwidth, channel);
+                xAPP.centerFrequency = (frequency * 1000000).ToString();
+            }
+           
             //Set set-top power level to pwrdB value
             double chipsetPowerLevel = GetParent<TransmitterStep>().pwrdB;
-            chipset.bcm4366SetPowerLevel(chipsetPowerLevel);
+            if (chipset66.IsConnected)
+            {
+                chipset66.SetPowerLevel(chipsetPowerLevel);
+            }
+            else
+            {
+                chipset60.SetPowerLevel(chipsetPowerLevel);
+            }
 
             // Initialise CHP settings  
             xAPP.MeasurementMode();

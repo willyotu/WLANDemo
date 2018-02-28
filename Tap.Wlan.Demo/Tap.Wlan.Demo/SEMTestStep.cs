@@ -51,7 +51,7 @@ namespace Tap.Wlan.Demo
             
             //Set set-top power level to pwrdB value
             double chipsetPowerLevel = GetParent<TransmitterStep>().pwrdB;
-            chipset.bcm4366SetPowerLevel(chipsetPowerLevel);
+            chipset.SetPowerLevel(chipsetPowerLevel);
 
             // Initialise SEM settings  
             // Select frequency based on channel

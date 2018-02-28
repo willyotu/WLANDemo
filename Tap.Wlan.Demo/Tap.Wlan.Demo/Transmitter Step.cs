@@ -73,7 +73,7 @@ namespace Tap.Wlan.Demo
 
         // This property lets the instrument appear in the plugin Instrument field
         public SAInstrument signalAnalyzer { get; set; }
-
+        public BCM4360 bcm4360 { get; set; }
         public BCM4366 bcm4366 { get; set; }
         #endregion
         public TransmitterStep()
@@ -120,13 +120,24 @@ namespace Tap.Wlan.Demo
         {
             base.PrePlanRun();
            
+            
+            
+
             // ToDo: Optionally add any setup code this step needs to run before the testplan starts
         }
         public override void Run()
         {
             // ToDo: Add test case code here
-            bcm4366.init4366tx(mode, antenna, ismBand,rate,ofdmRate,bandwidth,channel,pwrdB);
-             RunChildSteps(); //If step has child steps.
+            if (bcm4366.IsConnected)
+            {
+                bcm4366.init4366tx(mode, antenna, ismBand, rate, ofdmRate, bandwidth, channel, pwrdB);
+            }
+            else
+            {
+                bcm4360.Initialize4360tx(mode, antenna, ismBand, rate, ofdmRate, bandwidth, channel, pwrdB);
+            }
+
+            RunChildSteps(); //If step has child steps.
          
            // UpgradeVerdict(Verdict.Pass);
         }

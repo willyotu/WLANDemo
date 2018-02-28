@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnalyzerModels.cs" />
+    <Compile Include="BCM4360.cs" />
     <Compile Include="BCM4366.cs" />
     <Compile Include="MinInputSensitivityTestStep.cs" />
     <Compile Include="SAInstrument.cs" />
