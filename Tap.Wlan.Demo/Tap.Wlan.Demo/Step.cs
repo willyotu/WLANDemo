@@ -14,7 +14,7 @@ using Keysight.Tap;  // Use Platform infrastructure/core components (log,TestSte
 
 namespace Tap.Wlan.Demo
 {
-    [Display("Measure CW", Group: "WLAN Demo", Description: "Carrier Waveform SA using MXA")]
+    [Display("Measure CW", Group: "Tutorial", Description: "Carrier Waveform SA using MXA")]
     public class Step : TestStep
     {
         #region Settings

@@ -13,12 +13,13 @@ using Keysight.Tap;
 
 namespace Tap.Wlan.Demo
 {
-    [Display("SEMTestStep", Groups: new[] { "Demo", "Transmitter Measurements" }, Description: "Insert a description here")]
-    [AllowAsChildIn(typeof(Transmitter_Measurements))]
+    [Display("Spectrual Emission Mask", Groups: new[] { "WLAN Demo", "Transmitter Measurements" }, Description: "Insert a description here")]
+    [AllowAsChildIn(typeof(TransmitterStep))]
     public class SEMTestStep : TestStep
     {
         #region Settings
         // ToDo: Add property here for each parameter the end user should be able to change
+        // public Instrument xAPP;
         #endregion
         public SEMTestStep()
         {
@@ -34,14 +35,121 @@ namespace Tap.Wlan.Demo
         public override void Run()
         {
             // ToDo: Add test case code here
-            RunChildSteps(); //If step has child steps.
-            UpgradeVerdict(Verdict.Pass);
+            SEMTestRun();
+            UpgradeVerdict(Keysight.Tap.Verdict.Pass);
         }
 
-        public override void PostPlanRun()
+        private void SEMTestRun()//System.Diagnostics.TraceSource log,  double frequency
         {
-            // ToDo: Optionally add any cleanup code this step needs to run after the entire testplan has finished
-            base.PostPlanRun();
+            SAMeasurements sem = new SAMeasurements();
+            BCM4366 chipset = GetParent<TransmitterStep>().bcm4366;
+            SAInstrument xAPP = GetParent<TransmitterStep>().signalAnalyzer;
+            double rfbLevel = GetParent<TransmitterStep>().absTriggerLevel;
+            int bandwidth = GetParent<TransmitterStep>().bw;
+            int channel = GetParent<TransmitterStep>().channel;
+            string mode = GetParent<TransmitterStep>().mode;
+
+            //Set set-top power level to pwrdB value
+            double chipsetPowerLevel = GetParent<TransmitterStep>().pwrdB;
+            chipset.bcm4366SetPowerLevel(chipsetPowerLevel);
+
+            // Initialise SEM settings  
+            // Select frequency based on channel
+            double frequency = chipset.choose_freq(bandwidth, channel);
+            xAPP.centerFrequency = (frequency * 1000000).ToString();
+            xAPP.MeasurementMode();
+            xAPP.WlanMode(bandwidth, mode.ToString());
+            xAPP.SEMConfigure();
+            xAPP.RFBLevel = rfbLevel.ToString();
+            //xAPP.SEMTriggerSource();
+            xAPP.OptimizePowerRange();
+
+            // Returns SEM Pass/Fail Test results
+            SEMLimitTestResults(xAPP);
+
+            // Returns SEM data results
+            SEMDataResults(xAPP);
+        }
+
+        private void SEMLimitTestResults(SAInstrument xAPP)
+        {
+            bool average = GetParent<TransmitterStep>().average;
+            int numberOfAverages = GetParent<TransmitterStep>().numberOfAverages;
+            SAMeasurements.SEMLimitTest semLimitTest = xAPP.MeasureSEMLimit(average, numberOfAverages);
+
+
+            var SEMLimit = new string[] {
+                "Negative Offset Frequency (A) ",
+                "Positive Offset Frequency (A) ",
+                "Negative Offset Frequency (B) ",
+                "Positive Offset Frequency (B) "
+                };
+            var SEMResult = new double[] {
+                semLimitTest.NegOFFSFREQA,
+                semLimitTest.PosOFFSFREQA,
+                semLimitTest.NegOFFSFREQB,
+                semLimitTest.PosOFFSFREQB
+                };
+            Results.PublishTable("SEM Limit Test", new List<string> { "SEM Offset Limit", "SEMResult" }, SEMLimit, SEMResult);
+            VerdictPassFail(semLimitTest);
+        }
+
+        private Verdict VerdictPassFail(SAMeasurements.SEMLimitTest semLimitTest)
+        {
+            Log.Info("  Running Spectrum Emission Mask Test ");
+            Log.Info("  Negative Offset Frequency (A)        : {0,4:0.00} ", semLimitTest.NegOFFSFREQA);
+            Log.Info("  Positive Offset Frequency (A)        : {0,5:0.00} ", semLimitTest.PosOFFSFREQA);
+            Log.Info("  Negative Offset Frequency (B)        : {0,6:0.00} ", semLimitTest.NegOFFSFREQB);
+            Log.Info("  Positive Offset Frequency (B)        : {0,7:0.00} ", semLimitTest.PosOFFSFREQB);
+            if (semLimitTest.NegOFFSFREQA == 0 & semLimitTest.PosOFFSFREQA == 0 & semLimitTest.NegOFFSFREQB == 0 & semLimitTest.PosOFFSFREQB == 0)
+            {
+                Verdict = Verdict.Pass;
+            }
+            else
+            {
+                Verdict = Verdict.Fail;
+            }
+            return Verdict;
+        }
+
+        private void SEMDataResults(SAInstrument xAPP)
+        {
+            SAMeasurements.SEM_Data SEM_Data = xAPP.MeasureSEMData();
+            var SEMDataSettings = new string[] {
+                 "LowerAbsPowerA  ",
+                 "LowerDeltaLimitA",
+                 "LowerFreqA      ",
+                 "UpperAbsPowerA  ",
+                 "UpperDeltaLimitA",
+                 "UpperFreqA      ",
+                 "LowerAbsPowerB  ",
+                 "LowerDeltaLimitB",
+                 "LowerFreqB      ",
+                 "UpperAbsPowerB  ",
+                 "UpperDeltaLimitB",
+                 "UpperFreqB      "
+            };
+
+            var SEMData = new double[] {
+                 Math.Round(SEM_Data.LowerAbsPowerA,2),
+                 Math.Round(SEM_Data.LowerDeltaLimitA,2),
+                 SEM_Data.LowerFreqA,
+                 Math.Round(SEM_Data.UpperAbsPowerA,2),
+                 Math.Round(SEM_Data.UpperDeltaLimitA,2),
+                 SEM_Data.UpperFreqA,
+                 Math.Round(SEM_Data.LowerAbsPowerB,2),
+                 Math.Round(SEM_Data.LowerDeltaLimitB,2),
+                 SEM_Data.LowerFreqB,
+                 Math.Round(SEM_Data.UpperAbsPowerB,2),
+                 Math.Round(SEM_Data.UpperDeltaLimitB,2),
+                 SEM_Data.UpperFreqB,
+            };
+
+            var SEMDataUnit = new string[] {
+                 "dB","dB","Hz","dB","dB","Hz","dB","dB","Hz","dB","dB","Hz"
+            };
+            Results.PublishTable("SEM Data", new List<string> {"SEMDataSettings", "SEM Data", "SEM Data Unit"}, SEMDataSettings, SEMData, SEMDataUnit);
         }
     }
-}
+ }
+      

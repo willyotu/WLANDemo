@@ -9,7 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TapPlugin.PaceUK
+namespace Tap.Wlan.Demo
+
 {
     public enum WLanStandard
     {

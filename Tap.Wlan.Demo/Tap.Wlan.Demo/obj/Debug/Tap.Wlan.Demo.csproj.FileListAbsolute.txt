@@ -4,3 +4,6 @@ C:\Program Files\Keysight\TAP8\Demo\Tap.Wlan.Demo.pdb
 C:\Users\wilattoh\documents\visual studio 2015\Projects\Tap.WLAN.Demo\Tap.Wlan.Demo\obj\Debug\Tap.Wlan.Demo.dll
 C:\Users\wilattoh\documents\visual studio 2015\Projects\Tap.WLAN.Demo\Tap.Wlan.Demo\obj\Debug\Tap.Wlan.Demo.pdb
 C:\Users\wilattoh\documents\visual studio 2015\Projects\Tap.WLAN.Demo\Tap.Wlan.Demo\obj\Debug\Tap.Wlan.Demo.csprojResolveAssemblyReference.cache
+C:\Users\wilattoh\Documents\GitHub\WLANDemo\Tap.Wlan.Demo\Tap.Wlan.Demo\obj\Debug\Tap.Wlan.Demo.csprojResolveAssemblyReference.cache
+C:\Users\wilattoh\Documents\GitHub\WLANDemo\Tap.Wlan.Demo\Tap.Wlan.Demo\obj\Debug\Tap.Wlan.Demo.dll
+C:\Users\wilattoh\Documents\GitHub\WLANDemo\Tap.Wlan.Demo\Tap.Wlan.Demo\obj\Debug\Tap.Wlan.Demo.pdb
